@@ -160,12 +160,20 @@
   <!-- ============ 素材库（Input Library） ============ -->
   <section id="material" class="tab">
     <h2>📖 素材收纳库</h2>
-    <p class="hint">发我小红书博主主页 / 单条笔记链接 → 我自动归档到此，并提取短句进句型库。</p>
+    <p class="hint">多平台来源，国内全部可直接访问。发我任意链接（小红书 / B站 / 播客 / 网页）→ 我抓取里面的地道表达，归档到此并写进跟读库。</p>
 
-    <div class="section-title">📌 Creator｜博主主页合集</div>
+    <div class="section-title">🎧 每日输入源｜播客 · 视频 · 网站</div>
     <div class="card" id="creatorList"></div>
 
-    <div class="section-title">🎬 Video｜单条笔记 / 视频</div>
+    <div class="section-title">💡 输入怎么用才有效</div>
+    <div class="card">
+      <div class="feed-card"><div class="top"><div class="name">① 盲听一遍</div><span class="tag">5 分钟</span></div><div class="why">不看字幕，只抓大意和语气，别纠结每个词。听不懂是正常的。</div></div>
+      <div class="feed-card"><div class="top"><div class="name">② 再听抓句</div><span class="tag">5 分钟</span></div><div class="why">听到「这句我想用」就暂停抄下来。标准只有一个：<b>你自己会用</b>。</div></div>
+      <div class="feed-card"><div class="top"><div class="name">③ 每天只留 3 句</div><span class="tag">关键</span></div><div class="why">贪多必弃。3 句 × 90 天 = 270 句主动表达，足够覆盖日常。</div></div>
+      <div class="feed-card"><div class="top"><div class="name">④ 当天就用掉</div><span class="tag">最重要</span></div><div class="why">写手帐或口述时硬塞进去。用过一次才从「认识」变成「会说」。</div></div>
+    </div>
+
+    <div class="section-title">🎬 已归档｜单条笔记 / 视频</div>
     <div class="card">
       <div class="feed-card">
         <div class="top"><div class="name">让我快速开口说英语的方法，做成AI工作台</div><span class="tag">方法</span><span class="tag">影子跟读</span></div>
@@ -174,11 +182,12 @@
       </div>
     </div>
 
-    <div class="section-title">📒 Journal｜双语手帐笔记</div>
-    <div class="card"><p class="empty">暂无。转发小红书手帐笔记链接给我，自动归档。</p></div>
-
-    <div class="section-title">✈️ Travel｜旅行英文素材</div>
-    <div class="card"><p class="empty">暂无。转发旅行英文 Vlog / 笔记链接给我，自动归档。</p></div>
+    <div class="section-title">📥 想加新素材？</div>
+    <div class="card">
+      <p class="small">直接把链接发到对话里，我会：<br>
+      ① 打开抓取正文 → ② 提取地道短句 → ③ 按场景分类 → ④ 写进跟读库并推送更新。<br><br>
+      刷新这个页面就能看到新内容，<b>不用重新下载</b>。</p>
+    </div>
   </section>
 
   <!-- ============ 句型库（Sentence Bank） ============ -->
@@ -204,7 +213,8 @@
   <!-- ============ 跟读（Shadowing） ============ -->
   <section id="shadow" class="tab">
     <h2>🗣️ 跟读练习（影子跟读）</h2>
-    <p class="hint">点「听原声」用设备朗读（离线可用），跟着读就行，<b>不用开视频、不用传录音</b>。会了点✅，进度自动记。</p>
+    <p class="hint">共 <b>205 句</b>生活化语料。点「听原声」用设备朗读（离线可用），跟着读就行，<b>不用开视频、不用传录音</b>。会了点✅，进度自动记。</p>
+    <p class="hint" style="background:var(--green-soft);padding:9px 11px;border-radius:10px;margin-top:-4px">💡 <b>卡壳、脑内翻译</b>是你的主要问题 → 优先刷「<b>接话反应</b>」和「<b>救场拖延</b>」两类。这 45 句是维持对话不断的救命稻草，练熟后你会发现自己不再冷场。</p>
     <div class="card">
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
         <button class="mode active" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('全部',this)">全部</button>
@@ -212,6 +222,8 @@
         <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('内心感悟',this)">内心感悟</button>
         <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('旅行场景',this)">旅行场景</button>
         <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('社交闲聊',this)">社交闲聊</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('接话反应',this)">接话反应</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('救场拖延',this)">救场拖延</button>
       </div>
       <div id="shadowCard"></div>
       <p class="small" id="shadowProg" style="text-align:center;margin-top:8px"></p>
@@ -492,12 +504,16 @@ function val(id){ return document.getElementById(id).value; }
 
 /* ===== 素材库 & 推送 ===== */
 const creators=[
-  {name:'英文手帐 / 双语手帐博主',tag:'手帐/计划',url:'在小红书 App 内搜索「英文手帐」「双语手帐」',why:'手帐 setup、周计划、目标设定表达',tip:'monthly spread、set intentions'},
-  {name:'海外生活 Vlog 博主',tag:'日常/社交',url:'在小红书 App 内搜索「英文vlog」「daily vlog 跟练」',why:'真实松弛口语、日常起居描述',tip:'genuinely、lowkey'},
-  {name:'旅行英文博主',tag:'旅行',url:'在小红书 App 内搜索「旅行英语」「出国口语」',why:'交通/住宿/餐厅/问路实用句',tip:'check in、how do I get to'},
-  {name:'治愈 / 内心感悟博主',tag:'内心/治愈',url:'在小红书 App 内搜索「英文治愈」「english journal」',why:'slow living、情绪表达',tip:'feel grounded'},
-  {name:'美食英文博主',tag:'旅行/美食',url:'在小红书 App 内搜索「美食英语」「food english」',why:'餐厅点餐、形容食物',tip:'packed with flavor'},
-  {name:'问路 / 城市攻略博主',tag:'旅行/问路',url:'在小红书 App 内搜索「城市英语」「问路英语」',why:'交通、景点、突发状况',tip:'watch out for'}
+  {name:"小宇宙《慢播》",tag:"播客/日常",url:"小宇宙 App 搜「慢播」",why:"面向初学者的慢速英语播客，主题围绕生活、兴趣、成长，逐句讲解，语速舒缓",tip:"适合通勤盲听，抓 3 句写进句型库"},
+  {name:"喜马拉雅《慢速英语播客》",tag:"播客/入门",url:"喜马拉雅 App 搜「慢速英语播客」",why:"迷你故事、短剧、真实对话、发音指南，节目短，适合每天一集",tip:"跟读整段对话，而非单句"},
+  {name:"飞岩播客 feiyanpod.com",tag:"播客/字幕",url:"浏览器打开 feiyanpod.com",why:"带字幕的英文播客平台，EnglishPod 系列，可边听边看文本",tip:"先盲听一遍，再看字幕对答案"},
+  {name:"B站《日常英语播客》合集",tag:"视频/日常",url:"B 站搜「日常英语播客 Daily English Podcast」",why:"国内可直接看，油管热门英语播客搬运合集，有中英字幕",tip:"选 5 分钟内的短集做影子跟读"},
+  {name:"B站 英文 Vlog 跟练",tag:"视频/Vlog",url:"B 站搜「英文vlog 跟读」「daily vlog 英语」",why:"真实生活 Vlog，松弛口语、日常起居描述，语速接近真人",tip:"重点抓 filler words 和语气词"},
+  {name:"小红书 英文手帐",tag:"手帐/双语",url:"小红书 App 搜「英文手帐」「双语手帐」",why:"手帐排版、周计划、目标设定的英文表达",tip:"monthly spread / set intentions"},
+  {name:"小红书 治愈英文",tag:"内心/治愈",url:"小红书 App 搜「英文治愈」「english journal」",why:"slow living、情绪表达、内省类文案",tip:"feel grounded / romanticize the mundane"},
+  {name:"小红书 旅行英语",tag:"旅行",url:"小红书 App 搜「旅行英语」「出国口语」",why:"交通、住宿、餐厅、问路的实用句",tip:"check in / how do I get to"},
+  {name:"CoffeeTalk Blog",tag:"网站/口语块",url:"浏览器打开 coffee-talk.net/blog",why:"主张「学整块短语而非单词」，收录真实高频对话块",tip:"把 chunk 当一个整体记，不要拆开"},
+  {name:"English Aura 情绪词库",tag:"网站/写作",url:"浏览器搜 englishaura.com 40 emotion words",why:"40 个进阶情绪词，每个带定义、例句、同义词，专治手帐词穷",tip:"别再写 happy / sad，换 serene / melancholy"}
 ];
 function card(c){ return '<div class="feed-card"><div class="top"><div class="name">'+c.name+'</div><span class="tag">'+c.tag+'</span></div><div class="why" style="margin:4px 0">📱 '+c.url+'</div><div class="why">'+c.why+'</div><div class="tip">🎯 '+c.tip+'</div></div>'; }
 function renderCreator(){ document.getElementById('creatorList').innerHTML=creators.map(card).join(''); }
@@ -505,26 +521,217 @@ function renderPush(){ document.getElementById('pushFeed').innerHTML=creators.sl
 
 /* ===== 跟读练习（影子跟读，离线 TTS，无需传录音） ===== */
 const packs=[
-  {scene:'日常起居',en:"I've been feeling a bit off lately.",cn:'最近状态有点不对。'},
-  {scene:'日常起居',en:"I'm just gonna take it easy today.",cn:'今天我就想放松躺平。'},
-  {scene:'日常起居',en:"My morning routine helps me start the day calm.",cn:'晨间routine让我平静地开启一天。'},
-  {scene:'日常起居',en:"I totally lost track of time scrolling my phone.",cn:'刷手机刷得完全忘了时间。'},
-  {scene:'日常起居',en:"I'm running low on sleep this week.",cn:'这周睡眠不太够。'},
-  {scene:'内心感悟',en:"Lately I've been thinking about what really matters.",cn:'最近常想什么才真正重要。'},
-  {scene:'内心感悟',en:"Writing things down always clears my head.",cn:'把想法写下来总能理清思绪。'},
-  {scene:'内心感悟',en:"Some days are just for slowing down and doing nothing.",cn:'有些日子就是用来慢下来、什么都不做。'},
-  {scene:'内心感悟',en:"I'm learning to be okay with not being productive.",cn:'我在学着接受"不高效"也没关系。'},
-  {scene:'内心感悟',en:"A quiet evening like this is exactly what I needed.",cn:'这样一个安静的夜晚正是我需要的。'},
-  {scene:'旅行场景',en:"Could you recommend a good local spot to eat?",cn:'能推荐个当地好吃的地儿吗？'},
-  {scene:'旅行场景',en:"Is this the right stop for the old town?",cn:'老城是这一站下吗？'},
-  {scene:'旅行场景',en:"We ended up wandering into the cutest little café.",cn:'我们误打误撞进了一家超可爱的小咖啡馆。'},
-  {scene:'旅行场景',en:"The view from up here is absolutely worth the climb.",cn:'爬上来这风景绝对值。'},
-  {scene:'旅行场景',en:"Do you know where I can grab a sim card nearby?",cn:'这附近哪能买sim卡？'},
-  {scene:'社交闲聊',en:"What have you been binge-watching lately?",cn:'你最近在追什么剧？'},
-  {scene:'社交闲聊',en:"We just popped into a few shops for fun.",cn:'我们就随便逛了逛店。'},
-  {scene:'社交闲聊',en:"I'm not much of a planner — I like to go with the flow.",cn:'我不太爱计划，喜欢随性。'},
-  {scene:'社交闲聊',en:"Have you read anything good recently?",cn:'最近有读到什么好书吗？'},
-  {scene:'社交闲聊',en:"It's been ages since we last caught up.",cn:'我们好久没好好叙旧了。'}
+  // ---- 日常起居 ----
+  {scene:"日常起居",en:"I've been feeling a bit off lately.",cn:"最近状态有点不对。"},
+  {scene:"日常起居",en:"I'm just gonna take it easy today.",cn:"今天我就想放松躺平。"},
+  {scene:"日常起居",en:"My morning routine helps me start the day calm.",cn:"晨间流程让我平静地开启一天。"},
+  {scene:"日常起居",en:"I totally lost track of time scrolling my phone.",cn:"刷手机刷得完全忘了时间。"},
+  {scene:"日常起居",en:"I'm running low on sleep this week.",cn:"这周睡眠不太够。"},
+  {scene:"日常起居",en:"I slept like a rock last night.",cn:"昨晚睡得特别沉。"},
+  {scene:"日常起居",en:"I hit snooze like four times this morning.",cn:"早上闹钟按掉了得有四回。"},
+  {scene:"日常起居",en:"I'm not really a morning person.",cn:"我不太是早起型的人。"},
+  {scene:"日常起居",en:"I just threw something together for lunch.",cn:"午饭随便凑合弄了点。"},
+  {scene:"日常起居",en:"I've been meaning to clean out my closet.",cn:"我一直想着把衣柜清一清。"},
+  {scene:"日常起居",en:"The apartment finally feels lived-in.",cn:"这房子终于有生活气了。"},
+  {scene:"日常起居",en:"I'm doing a big grocery run today.",cn:"今天要去大采购一次。"},
+  {scene:"日常起居",en:"I ran out of coffee, which is a crisis.",cn:"咖啡喝完了，这算重大事故。"},
+  {scene:"日常起居",en:"I'm trying to cut back on takeout.",cn:"我在试着少点外卖。"},
+  {scene:"日常起居",en:"Laundry day. My least favorite day.",cn:"洗衣日，我最不爱的一天。"},
+  {scene:"日常起居",en:"I've got a million little errands to run.",cn:"有一堆零碎的事要跑。"},
+  {scene:"日常起居",en:"I'm just puttering around the house today.",cn:"今天就在家里瞎忙活。"},
+  {scene:"日常起居",en:"I finally got around to watering the plants.",cn:"终于抽出空给植物浇了水。"},
+  {scene:"日常起居",en:"My back's been bugging me from sitting all day.",cn:"整天坐着，后背一直不舒服。"},
+  {scene:"日常起居",en:"I need to move my body at some point today.",cn:"今天总得动一动。"},
+  {scene:"日常起居",en:"I went for a walk just to clear my head.",cn:"出去走了走，就为了清醒一下。"},
+  {scene:"日常起居",en:"I'm easing into the day with some tea.",cn:"泡杯茶，慢慢进入状态。"},
+  {scene:"日常起居",en:"I've been on my feet all day.",cn:"我一整天都站着。"},
+  {scene:"日常起居",en:"I'm calling it a night early.",cn:"我今晚早点收工。"},
+  {scene:"日常起居",en:"I need to get back into a proper sleep schedule.",cn:"我得把作息调回正常。"},
+  {scene:"日常起居",en:"The weather's been all over the place.",cn:"天气忽冷忽热的。"},
+  {scene:"日常起居",en:"It's one of those cozy stay-in kind of days.",cn:"就是那种适合窝家里的日子。"},
+  {scene:"日常起居",en:"I'm making a dent in my to-do list.",cn:"我的待办清单总算清掉一些了。"},
+  {scene:"日常起居",en:"I keep putting this off.",cn:"这事我一直往后拖。"},
+  {scene:"日常起居",en:"I'll deal with it tomorrow — future me's problem.",cn:"明天再说吧，交给未来的我。"},
+  {scene:"日常起居",en:"I'm running late, as usual.",cn:"我又迟到了，老样子。"},
+  {scene:"日常起居",en:"I have zero energy today.",cn:"我今天完全没电了。"},
+  {scene:"日常起居",en:"I'm gonna treat myself to something nice.",cn:"我要好好犒劳自己一下。"},
+  {scene:"日常起居",en:"I redid my whole desk setup.",cn:"我把桌面整个重新布置了。"},
+  {scene:"日常起居",en:"Nothing beats a hot shower after a long day.",cn:"累了一天，热水澡最治愈。"},
+  {scene:"日常起居",en:"I've been listening to this on repeat.",cn:"这个我一直单曲循环。"},
+  {scene:"日常起居",en:"My phone's about to die.",cn:"我手机快没电了。"},
+  {scene:"日常起居",en:"I meal-prepped for the whole week.",cn:"我把一周的饭都备好了。"},
+  {scene:"日常起居",en:"I'm trying to be better about drinking water.",cn:"我在努力多喝点水。"},
+  {scene:"日常起居",en:"It's been a slow, quiet kind of morning.",cn:"今早过得慢悠悠、静悄悄的。"},
+  // ---- 内心感悟 ----
+  {scene:"内心感悟",en:"Lately I've been thinking about what really matters.",cn:"最近常想什么才真正重要。"},
+  {scene:"内心感悟",en:"Writing things down always clears my head.",cn:"把想法写下来总能理清思绪。"},
+  {scene:"内心感悟",en:"Some days are just for slowing down and doing nothing.",cn:"有些日子就是用来慢下来、什么都不做。"},
+  {scene:"内心感悟",en:"I'm learning to be okay with not being productive.",cn:"我在学着接受「不高效」也没关系。"},
+  {scene:"内心感悟",en:"A quiet evening like this is exactly what I needed.",cn:"这样一个安静的夜晚正是我需要的。"},
+  {scene:"内心感悟",en:"I felt a wave of melancholy looking at old photos.",cn:"翻旧照片时涌上一阵淡淡的伤感。"},
+  {scene:"内心感悟",en:"I'm feeling weirdly content today.",cn:"今天莫名觉得很满足。"},
+  {scene:"内心感悟",en:"I've been a bit pensive lately.",cn:"最近有点沉思、心事重重。"},
+  {scene:"内心感悟",en:"I'm trying to sit with the discomfort instead of running.",cn:"我在试着与不适共处，而不是逃开。"},
+  {scene:"内心感悟",en:"Something small today genuinely made my day.",cn:"今天一件小事真的让我很开心。"},
+  {scene:"内心感悟",en:"I'm grateful for how ordinary today was.",cn:"我很感激今天的平凡。"},
+  {scene:"内心感悟",en:"I keep comparing myself to people online, and it's exhausting.",cn:"我总跟网上的人比较，很消耗。"},
+  {scene:"内心感悟",en:"I need to give myself more credit.",cn:"我该多肯定一下自己。"},
+  {scene:"内心感悟",en:"I've been feeling a little disconnected lately.",cn:"最近感觉有点抽离、不在状态。"},
+  {scene:"内心感悟",en:"Rest isn't something I have to earn.",cn:"休息不是我必须挣来的。"},
+  {scene:"内心感悟",en:"I'm slowly making peace with the pace I'm at.",cn:"我在慢慢接受自己的节奏。"},
+  {scene:"内心感悟",en:"Progress doesn't always look like progress.",cn:"进步不总是看起来像进步。"},
+  {scene:"内心感悟",en:"I want to be more intentional with my time.",cn:"我想更有意识地安排时间。"},
+  {scene:"内心感悟",en:"I felt genuinely present today, which is rare.",cn:"今天难得地真正专注当下。"},
+  {scene:"内心感悟",en:"There's something grounding about doing things by hand.",cn:"亲手做点什么，让人很踏实。"},
+  {scene:"内心感悟",en:"I'm learning that boundaries are a form of kindness.",cn:"我发现设界限也是一种善意。"},
+  {scene:"内心感悟",en:"I don't have it figured out, and that's fine.",cn:"我还没想明白，但也没关系。"},
+  {scene:"内心感悟",en:"I feel ambivalent about the whole thing.",cn:"我对这整件事心情很矛盾。"},
+  {scene:"内心感悟",en:"I'm nostalgic for a version of life I never had.",cn:"我怀念一种我从未拥有过的生活。"},
+  {scene:"内心感悟",en:"I've been languishing a bit in this routine.",cn:"在这种日复一日里我有点萎靡。"},
+  {scene:"内心感悟",en:"I felt disheartened, but I'm not giving up.",cn:"有点灰心，但我没放弃。"},
+  {scene:"内心感悟",en:"Today I chose softness over hustle.",cn:"今天我选择温柔，而不是拼命。"},
+  {scene:"内心感悟",en:"I want less noise and more meaning.",cn:"我想要少一点嘈杂，多一点意义。"},
+  {scene:"内心感悟",en:"I'm relearning how to enjoy things without documenting them.",cn:"我在重新学习享受而不记录。"},
+  {scene:"内心感悟",en:"Being alone and being lonely are two different things.",cn:"独处和孤独是两回事。"},
+  {scene:"内心感悟",en:"I notice I'm hardest on myself when I'm tired.",cn:"我发现累的时候对自己最苛刻。"},
+  {scene:"内心感悟",en:"Small consistent things add up.",cn:"微小而持续的事会累积起来。"},
+  {scene:"内心感悟",en:"I'm allowed to change my mind.",cn:"我可以改变主意。"},
+  {scene:"内心感悟",en:"I felt seen today, and that meant a lot.",cn:"今天感觉被理解了，这很珍贵。"},
+  {scene:"内心感悟",en:"I'm trying to romanticize the mundane.",cn:"我在试着把平淡过成诗。"},
+  {scene:"内心感悟",en:"Some seasons are just for surviving, not thriving.",cn:"有些阶段只需撑过去，不必开花。"},
+  {scene:"内心感悟",en:"I feel apprehensive about what's next, honestly.",cn:"说实话我对接下来有点忐忑。"},
+  {scene:"内心感悟",en:"Journaling helps me hear my own thoughts.",cn:"写手帐让我听见自己的想法。"},
+  {scene:"内心感悟",en:"I want to build a life I don't need to escape from.",cn:"我想建一种不需要逃离的生活。"},
+  {scene:"内心感悟",en:"Today was unremarkable, and I'm okay with that.",cn:"今天平平无奇，我也接受。"},
+  // ---- 旅行场景 ----
+  {scene:"旅行场景",en:"Could you recommend a good local spot to eat?",cn:"能推荐个当地好吃的地儿吗？"},
+  {scene:"旅行场景",en:"Is this the right stop for the old town?",cn:"老城是这一站下吗？"},
+  {scene:"旅行场景",en:"We ended up wandering into the cutest little café.",cn:"我们误打误撞进了一家超可爱的小咖啡馆。"},
+  {scene:"旅行场景",en:"The view from up here is absolutely worth the climb.",cn:"爬上来这风景绝对值。"},
+  {scene:"旅行场景",en:"Do you know where I can grab a SIM card nearby?",cn:"这附近哪能买 SIM 卡？"},
+  {scene:"旅行场景",en:"I'd like to check in. I have a reservation under Wang.",cn:"我想办入住，用王的名字订的。"},
+  {scene:"旅行场景",en:"Is breakfast included?",cn:"含早餐吗？"},
+  {scene:"旅行场景",en:"What time is checkout?",cn:"几点退房？"},
+  {scene:"旅行场景",en:"Could I leave my luggage here for a few hours?",cn:"我能把行李在这儿寄存几小时吗？"},
+  {scene:"旅行场景",en:"Excuse me, how do I get to the train station?",cn:"打扰一下，火车站怎么走？"},
+  {scene:"旅行场景",en:"Is it walkable from here, or should I take a cab?",cn:"从这儿能走过去吗，还是得打车？"},
+  {scene:"旅行场景",en:"How long does it take to get there?",cn:"到那儿要多久？"},
+  {scene:"旅行场景",en:"Does this bus go to the airport?",cn:"这趟车去机场吗？"},
+  {scene:"旅行场景",en:"I think I'm going the wrong way.",cn:"我好像走反了。"},
+  {scene:"旅行场景",en:"Could you write that down for me?",cn:"能帮我写下来吗？"},
+  {scene:"旅行场景",en:"Sorry, I don't speak much of the language.",cn:"抱歉，我不太会说这儿的语言。"},
+  {scene:"旅行场景",en:"Could I get a table for one, please?",cn:"一位，能给个座吗？"},
+  {scene:"旅行场景",en:"What do you recommend?",cn:"你推荐什么？"},
+  {scene:"旅行场景",en:"What's this place known for?",cn:"这家店招牌是什么？"},
+  {scene:"旅行场景",en:"I'll have what they're having.",cn:"他们点的那个，我也来一份。"},
+  {scene:"旅行场景",en:"Is this dish spicy?",cn:"这道菜辣吗？"},
+  {scene:"旅行场景",en:"Could we get the bill, please?",cn:"麻烦买单。"},
+  {scene:"旅行场景",en:"Do you take card?",cn:"能刷卡吗？"},
+  {scene:"旅行场景",en:"Keep the change.",cn:"不用找了。"},
+  {scene:"旅行场景",en:"How much is this?",cn:"这个多少钱？"},
+  {scene:"旅行场景",en:"I'm just looking, thanks.",cn:"我随便看看，谢谢。"},
+  {scene:"旅行场景",en:"Do you have this in a different size?",cn:"这个有别的尺码吗？"},
+  {scene:"旅行场景",en:"Is there a discount if I take two?",cn:"拿两个有优惠吗？"},
+  {scene:"旅行场景",en:"Could you take a photo of us?",cn:"能帮我们拍张照吗？"},
+  {scene:"旅行场景",en:"What time does it open tomorrow?",cn:"明天几点开门？"},
+  {scene:"旅行场景",en:"Is it worth going all the way out there?",cn:"特地跑那么远值得吗？"},
+  {scene:"旅行场景",en:"We're just here for a couple of days.",cn:"我们就待两天。"},
+  {scene:"旅行场景",en:"I'd rather just wander around with no plan.",cn:"我更想漫无目的地逛。"},
+  {scene:"旅行场景",en:"This place is way less touristy than I expected.",cn:"这里比我想的游客少多了。"},
+  {scene:"旅行场景",en:"My flight got delayed, so everything's shifted.",cn:"航班延误了，行程全乱了。"},
+  {scene:"旅行场景",en:"I think I left something in the room.",cn:"我好像有东西落房间了。"},
+  {scene:"旅行场景",en:"Where's the nearest pharmacy?",cn:"最近的药店在哪儿？"},
+  {scene:"旅行场景",en:"Is the tap water safe to drink here?",cn:"这儿的自来水能直接喝吗？"},
+  {scene:"旅行场景",en:"We got completely lost, but it worked out.",cn:"我们彻底迷路了，但最后还挺好。"},
+  {scene:"旅行场景",en:"That was hands down the best meal of the trip.",cn:"那绝对是这趟最好吃的一顿。"},
+  // ---- 社交闲聊 ----
+  {scene:"社交闲聊",en:"What have you been binge-watching lately?",cn:"你最近在追什么剧？"},
+  {scene:"社交闲聊",en:"We just popped into a few shops for fun.",cn:"我们就随便逛了逛店。"},
+  {scene:"社交闲聊",en:"I'm not much of a planner — I like to go with the flow.",cn:"我不太爱计划，喜欢随性。"},
+  {scene:"社交闲聊",en:"Have you read anything good recently?",cn:"最近有读到什么好书吗？"},
+  {scene:"社交闲聊",en:"It's been ages since we last caught up.",cn:"我们好久没好好叙旧了。"},
+  {scene:"社交闲聊",en:"How's it going?",cn:"最近怎么样？"},
+  {scene:"社交闲聊",en:"What are you up to this weekend?",cn:"这周末有什么安排？"},
+  {scene:"社交闲聊",en:"Not much, you?",cn:"没啥，你呢？"},
+  {scene:"社交闲聊",en:"Long time no see!",cn:"好久不见！"},
+  {scene:"社交闲聊",en:"Good to see you.",cn:"见到你真好。"},
+  {scene:"社交闲聊",en:"It was really nice talking to you.",cn:"跟你聊得很开心。"},
+  {scene:"社交闲聊",en:"Take care! Catch you later.",cn:"保重，回头见。"},
+  {scene:"社交闲聊",en:"We should do this more often.",cn:"我们该多这样聚聚。"},
+  {scene:"社交闲聊",en:"Let's grab coffee sometime.",cn:"找时间一起喝个咖啡。"},
+  {scene:"社交闲聊",en:"How did you two meet?",cn:"你俩怎么认识的？"},
+  {scene:"社交闲聊",en:"What do you do for fun?",cn:"你平时喜欢干嘛？"},
+  {scene:"社交闲聊",en:"I'm really into photography these days.",cn:"我最近很迷摄影。"},
+  {scene:"社交闲聊",en:"I've been getting into baking lately.",cn:"我最近开始烤面包了。"},
+  {scene:"社交闲聊",en:"That's so cool — tell me more.",cn:"太酷了，再多说说。"},
+  {scene:"社交闲聊",en:"Oh, I've been there! Same thing happened to me.",cn:"我懂！我也遇到过一样的事。"},
+  {scene:"社交闲聊",en:"Wait, seriously?",cn:"等等，真的假的？"},
+  {scene:"社交闲聊",en:"I totally get what you mean.",cn:"我完全懂你的意思。"},
+  {scene:"社交闲聊",en:"That's a good point, I hadn't thought of that.",cn:"有道理，我没想到这层。"},
+  {scene:"社交闲聊",en:"To be honest, I'm not sure.",cn:"老实说，我不太确定。"},
+  {scene:"社交闲聊",en:"I could go either way.",cn:"我都行，无所谓。"},
+  {scene:"社交闲聊",en:"I'm down, sounds fun.",cn:"我加入，听起来不错。"},
+  {scene:"社交闲聊",en:"Can I take a rain check?",cn:"这次能改天吗？"},
+  {scene:"社交闲聊",en:"Sorry, I've got a lot on my plate right now.",cn:"抱歉，我现在事情有点多。"},
+  {scene:"社交闲聊",en:"No worries at all.",cn:"完全没关系。"},
+  {scene:"社交闲聊",en:"Thanks, that's really thoughtful of you.",cn:"谢谢，你想得真周到。"},
+  {scene:"社交闲聊",en:"Congrats! You totally deserve it.",cn:"恭喜！你完全值得。"},
+  {scene:"社交闲聊",en:"That's too bad. Are you doing okay?",cn:"太可惜了，你还好吗？"},
+  {scene:"社交闲聊",en:"I feel you.",cn:"我懂你。"},
+  {scene:"社交闲聊",en:"It's kind of a long story.",cn:"这说来话长。"},
+  {scene:"社交闲聊",en:"Anyway, enough about me — how about you?",cn:"算了不说我了，你呢？"},
+  {scene:"社交闲聊",en:"I don't want to keep you.",cn:"不耽误你了。"},
+  {scene:"社交闲聊",en:"Say hi to your family for me.",cn:"替我向你家人问好。"},
+  {scene:"社交闲聊",en:"We ended up talking for three hours.",cn:"我们最后聊了三个小时。"},
+  {scene:"社交闲聊",en:"He's got such a dry sense of humor.",cn:"他那种冷幽默特别逗。"},
+  {scene:"社交闲聊",en:"I'm just glad we finally made it happen.",cn:"很高兴我们终于凑成了。"},
+  // ---- 接话反应 ----
+  {scene:"接话反应",en:"No way!",cn:"不会吧！"},
+  {scene:"接话反应",en:"That makes sense.",cn:"有道理。"},
+  {scene:"接话反应",en:"Fair enough.",cn:"行吧，说得通。"},
+  {scene:"接话反应",en:"Good for you!",cn:"真替你高兴！"},
+  {scene:"接话反应",en:"That's too bad.",cn:"那太遗憾了。"},
+  {scene:"接话反应",en:"My bad.",cn:"我的错。"},
+  {scene:"接话反应",en:"I'm in.",cn:"算我一个。"},
+  {scene:"接话反应",en:"Exactly.",cn:"就是这样。"},
+  {scene:"接话反应",en:"Right?!",cn:"可不是嘛！"},
+  {scene:"接话反应",en:"Oh, interesting.",cn:"哦，有意思。"},
+  {scene:"接话反应",en:"Huh, I never thought about it that way.",cn:"嗯，我从没这么想过。"},
+  {scene:"接话反应",en:"That's wild.",cn:"太离谱了。"},
+  {scene:"接话反应",en:"Makes two of us.",cn:"我也一样。"},
+  {scene:"接话反应",en:"Tell me about it.",cn:"可不是嘛（深有同感）。"},
+  {scene:"接话反应",en:"I hear you.",cn:"我明白你的意思。"},
+  {scene:"接话反应",en:"Same here.",cn:"我也是。"},
+  {scene:"接话反应",en:"Oh no, really?",cn:"不是吧，真的？"},
+  {scene:"接话反应",en:"That's amazing.",cn:"太棒了。"},
+  {scene:"接话反应",en:"Sounds about right.",cn:"听着挺对的。"},
+  {scene:"接话反应",en:"I guess that's one way to look at it.",cn:"这也算一种看法吧。"},
+  {scene:"接话反应",en:"Honestly, same.",cn:"说真的，我也是。"},
+  {scene:"接话反应",en:"Wait, back up — what happened?",cn:"等等，倒回去，怎么回事？"},
+  {scene:"接话反应",en:"You're kidding.",cn:"你逗我呢。"},
+  {scene:"接话反应",en:"Nice!",cn:"不错啊！"},
+  {scene:"接话反应",en:"Ugh, that's frustrating.",cn:"唉，真让人窝火。"},
+  // ---- 救场拖延 ----
+  {scene:"救场拖延",en:"Let me think for a second.",cn:"让我想一下。"},
+  {scene:"救场拖延",en:"How can I put this...",cn:"我该怎么说呢……"},
+  {scene:"救场拖延",en:"What's the word...",cn:"那个词叫什么来着……"},
+  {scene:"救场拖延",en:"It's kind of like...",cn:"它有点像……"},
+  {scene:"救场拖延",en:"You know what I mean?",cn:"你懂我意思吧？"},
+  {scene:"救场拖延",en:"I'm not sure how to say this, but...",cn:"我不知道怎么表达，不过……"},
+  {scene:"救场拖延",en:"Sorry, could you say that again?",cn:"抱歉，能再说一遍吗？"},
+  {scene:"救场拖延",en:"Could you speak a little more slowly?",cn:"能说慢一点吗？"},
+  {scene:"救场拖延",en:"What do you mean by that?",cn:"你说的是什么意思？"},
+  {scene:"救场拖延",en:"How do you say this in English?",cn:"这个用英语怎么说？"},
+  {scene:"救场拖延",en:"Give me a second.",cn:"给我一秒钟。"},
+  {scene:"救场拖延",en:"I mean...",cn:"我是说……"},
+  {scene:"救场拖延",en:"Actually, let me rephrase that.",cn:"我重新说一下。"},
+  {scene:"救场拖延",en:"Long story short,",cn:"长话短说，"},
+  {scene:"救场拖延",en:"The thing is,",cn:"问题是，"},
+  {scene:"救场拖延",en:"Anyway, where was I?",cn:"总之，我说到哪了？"},
+  {scene:"救场拖延",en:"It's hard to explain.",cn:"这有点难解释。"},
+  {scene:"救场拖延",en:"I forgot the word — the thing you use to...",cn:"我忘了那词，就是用来……的那个东西。"},
+  {scene:"救场拖延",en:"Bear with me.",cn:"稍等我一下。"},
+  {scene:"救场拖延",en:"That's not quite what I meant.",cn:"我不是那个意思。"}
 ];
 let shadowScene='全部', shadowQueue=[], shadowIdx=0;
 function getShadowQueue(){
