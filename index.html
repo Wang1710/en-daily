@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f4f2ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="英语工作台">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="生活化英语成长工作台｜手帐 · 日常 · 旅行 · 90天开口计划">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌿%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23e7f0e8'/%3E%3Ctext x='50' y='72' font-size='60' text-anchor='middle'%3E🌿%3C/text%3E%3C/svg%3E">
+<title>生活化英语成长工作台</title>
+<style>
+  :root{
+    --bg:#f4f2ec; --card:#ffffff; --ink:#3a3a36; --muted:#8a8a80;
+    --green:#6f9c76; --green-soft:#e7f0e8; --cream:#fbf9f3;
+    --accent:#c98a5e; --line:#e8e4da; --pink:#d98ca0; --blue:#5a8bbf;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+  body{display:flex;overflow:hidden}
+  /* 左侧导航（参考截图框架） */
+  .nav{width:74px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:8px;z-index:10;overflow-y:auto}
+  .nav-brand{font-size:18px;margin-bottom:8px}
+  .nav-item{width:60px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-size:10px;cursor:pointer;transition:.15s;padding:8px 0}
+  .nav-item span{font-size:19px}
+  .nav-item.active{background:var(--green-soft);color:var(--green);font-weight:600}
+  .nav-item:active{transform:scale(.94)}
+  /* 主内容 */
+  .main{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px;-webkit-overflow-scrolling:touch;max-width:680px;margin:0 auto}
+  .tab{display:none;animation:fade .25s ease}
+  .tab.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h1{font-size:20px;margin-bottom:2px}
+  h2{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  h3{font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .date{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+  .notice{background:#e8f4fc;border:1px solid #cfe4f7;border-radius:12px;padding:12px;font-size:12px;color:#2b6cb0;margin-bottom:14px;line-height:1.6}
+  .notice b{color:#1a4d7a}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:var(--cream);border-radius:14px;padding:12px 4px;text-align:center}
+  .stat .num{font-size:22px;font-weight:700;color:var(--green);line-height:1}
+  .stat .label{font-size:10px;color:var(--muted);margin-top:5px}
+  .pill{background:var(--green);color:#fff;font-size:10px;padding:3px 9px;border-radius:10px;margin-left:auto;font-weight:600;white-space:nowrap}
+  .mode-row{display:flex;gap:8px;margin-bottom:14px}
+  .mode{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px;font-size:12px;text-align:center;cursor:pointer;color:var(--muted)}
+  .mode.active{background:var(--green-soft);border-color:var(--green);color:var(--green);font-weight:600}
+  .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .action{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:.12s}
+  .action:active{transform:scale(.96);background:var(--green-soft)}
+  .action .icon{font-size:24px;margin-bottom:5px}
+  .action .t{font-size:13px;font-weight:600;margin-bottom:2px}
+  .action .s{font-size:10px;color:var(--muted)}
+  .btn{display:inline-block;background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer}
+  .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.block{display:block;width:100%;text-align:center;margin-top:12px}
+  .btn.sm{padding:6px 10px;font-size:11px}
+  .feed-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--cream)}
+  .feed-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+  .feed-card .name{font-weight:700;font-size:13px}
+  .feed-card a{color:var(--accent);text-decoration:none;font-size:11px;word-break:break-all;display:inline-block;margin:4px 0}
+  .feed-card .why{font-size:12px;color:#55534d;margin:6px 0}
+  .feed-card .tip{font-size:11px;color:var(--muted);background:var(--green-soft);border-radius:8px;padding:6px 8px}
+  .empty{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+  .tag{display:inline-block;font-size:10px;background:#eee9df;color:var(--muted);border-radius:6px;padding:2px 7px;margin:0 4px 4px 0}
+  .form-group{margin-bottom:12px}
+  .form-group label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+  .input,textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink)}
+  textarea{min-height:64px;resize:vertical}
+  table{width:100%;font-size:11px;border-collapse:collapse;margin-top:6px}
+  th,td{padding:8px 5px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:var(--cream);position:sticky;top:0}
+  .section-title{font-size:13px;font-weight:700;color:var(--green);margin:20px 0 10px;border-left:3px solid var(--green);padding-left:8px}
+  .small{font-size:11px;color:var(--muted);line-height:1.6}
+  .phase{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}
+  .phase:last-child{border:0}
+  .phase-dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex-shrink:0}
+  .phase-dot.on{background:var(--green)}
+  .phase-name{flex:1}
+  .phase-date{color:var(--muted);white-space:nowrap}
+  .list-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .list-row:last-child{border:0}
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-60px);background:rgba(58,58,54,.92);color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;opacity:0;transition:.3s;z-index:100;max-width:80%;text-align:center}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .hint{font-size:11px;color:var(--accent);margin-top:8px;line-height:1.5}
+  @media (max-width:360px){.nav{width:62px}.main{padding:12px}.action .s{font-size:9px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🌿</div>
+  <div class="nav-item active" data-tab="today" onclick="switchTab('today')"><span>📅</span>今日</div>
+  <div class="nav-item" data-tab="material" onclick="switchTab('material')"><span>📖</span>素材库</div>
+  <div class="nav-item" data-tab="sentence" onclick="switchTab('sentence')"><span>📝</span>句型库</div>
+  <div class="nav-item" data-tab="shadow" onclick="switchTab('shadow')"><span>🗣️</span>跟读</div>
+  <div class="nav-item" data-tab="oral" onclick="switchTab('oral')"><span>🎙️</span>口语</div>
+  <div class="nav-item" data-tab="review" onclick="switchTab('review')"><span>🔍</span>复盘</div>
+  <div class="nav-item" data-tab="method" onclick="switchTab('method')"><span>🧭</span>方法</div>
+</nav>
+
+<main class="main">
+
+  <!-- ============ 今日 ============ -->
+  <section id="today" class="tab active">
+    <h1>生活化英语成长工作台</h1>
+    <p class="date" id="todayDate">今天 · 2026-07-31</p>
+    <div class="notice">💡 <b>当 App 用</b>：把本 .html 发到手机 → Safari/Chrome 打开 → 分享 → 添加到主屏幕。全屏离线可用，打卡数据只存本机。素材推送与句型提取仍由 AI 在聊天里完成。</div>
+
+    <div class="card" id="profileCard">
+      <h3>🪪 我的档案（PRO）<button class="btn sm secondary" style="float:right" onclick="editProfile()">编辑</button></h3>
+      <div id="profileView"></div>
+    </div>
+
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat"><div class="num" id="st-streak">0</div><div class="label">连续打卡</div></div>
+        <div class="stat"><div class="num" id="st-total">0</div><div class="label">累计天数</div></div>
+        <div class="stat"><div class="num" id="st-input">0</div><div class="label">输入</div></div>
+        <div class="stat"><div class="num" id="st-oral">0</div><div class="label">口语</div></div>
+        <div class="stat"><div class="num" id="st-sent">0</div><div class="label">已学句型</div></div>
+        <div class="stat"><div class="num" id="st-review">0</div><div class="label">待复习</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔁 先复习（再学新的）</h3>
+      <div id="reviewPreview"></div>
+    </div>
+
+    <div class="card">
+      <h3>① 今日打卡 <span class="pill">第1阶段</span></h3>
+      <div class="mode-row">
+        <div class="mode active" onclick="setMode('standard',this)">标准日 ≈30分钟</div>
+        <div class="mode" onclick="setMode('light',this)">忙/累日 ≈10分钟</div>
+      </div>
+      <div class="action-grid">
+        <div class="action" onclick="doAction('input','material')"><div class="icon">🎧</div><div class="t">输入</div><div class="s">盲听 Vlog 抓短句</div></div>
+        <div class="action" onclick="doAction('oral','oral')"><div class="icon">🎙️</div><div class="t">口语</div><div class="s">2 分钟录音口述</div></div>
+        <div class="action" onclick="doAction('shadow','shadow')"><div class="icon">🗣️</div><div class="t">影子跟读</div><div class="s">听原声+跟读</div></div>
+        <div class="action" onclick="doAction('journal','sentence')"><div class="icon">📝</div><div class="t">写手帐</div><div class="s">双语写 1–2 句</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔍 素材推送 <span class="pill">AI 主动推</span></h3>
+      <div id="pushFeed"></div>
+      <button class="btn block secondary" onclick="switchTab('material')">查看全部素材库 →</button>
+    </div>
+
+    <div class="card">
+      <h3>🎯 今日一句 <span class="tag" id="todayOneTag"></span></h3>
+      <div id="todayOneBody"></div>
+    </div>
+  </section>
+
+  <!-- ============ 素材库（Input Library） ============ -->
+  <section id="material" class="tab">
+    <h2>📖 素材收纳库</h2>
+    <p class="hint">发我小红书博主主页 / 单条笔记链接 → 我自动归档到此，并提取短句进句型库。</p>
+
+    <div class="section-title">📌 Creator｜博主主页合集</div>
+    <div class="card" id="creatorList"></div>
+
+    <div class="section-title">🎬 Video｜单条笔记 / 视频</div>
+    <div class="card">
+      <div class="feed-card">
+        <div class="top"><div class="name">让我快速开口说英语的方法，做成AI工作台</div><span class="tag">方法</span><span class="tag">影子跟读</span></div>
+        <a href="https://www.xiaohongshu.com/explore/6a6b4154000000002800ad7a" target="_blank">@Kyson英语重启 · 小红书</a>
+        <div class="why">毕业后捡回听说，影子跟读几周开口，做成 AI 工作台。正文被登录墙挡，已按 #影子跟读 还原成「方法」页。</div>
+      </div>
+    </div>
+
+    <div class="section-title">📒 Journal｜双语手帐笔记</div>
+    <div class="card"><p class="empty">暂无。转发小红书手帐笔记链接给我，自动归档。</p></div>
+
+    <div class="section-title">✈️ Travel｜旅行英文素材</div>
+    <div class="card"><p class="empty">暂无。转发旅行英文 Vlog / 笔记链接给我，自动归档。</p></div>
+  </section>
+
+  <!-- ============ 句型库（Sentence Bank） ============ -->
+  <section id="sentence" class="tab">
+    <h2>📝 句型金库</h2>
+    <p class="hint">核心模块：场景｜原句｜改写｜使用记录。可手动添加，也可聊天让我帮你录入。</p>
+
+    <div class="card">
+      <h3>📋 句型清单</h3>
+      <div style="overflow-x:auto"><table id="sentenceTable"><thead><tr><th>#</th><th>场景</th><th>原句</th><th>改写</th><th>使用记录</th><th>操作</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h3>➕ 添加句型</h3>
+      <div class="form-group"><label>场景标签</label><input class="input" id="s-scene" placeholder="日常/情绪"></div>
+      <div class="form-group"><label>原句（可复用）</label><input class="input" id="s-en" placeholder="I've been feeling a bit off lately."></div>
+      <div class="form-group"><label>个人改写版本</label><input class="input" id="s-cn" placeholder="最近状态有点不对。"></div>
+      <div class="form-group"><label>使用记录（哪天手帐/口语用到）</label><input class="input" id="s-use" placeholder="07-31 手帐"></div>
+      <button class="btn" onclick="addSentence()">加入金库 + 复习</button>
+    </div>
+  </section>
+
+  <!-- ============ 跟读（Shadowing） ============ -->
+  <section id="shadow" class="tab">
+    <h2>🗣️ 跟读练习（影子跟读）</h2>
+    <p class="hint">点「听原声」用设备朗读（离线可用），跟着读就行，<b>不用开视频、不用传录音</b>。会了点✅，进度自动记。</p>
+    <div class="card">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="mode active" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('全部',this)">全部</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('日常起居',this)">日常起居</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('内心感悟',this)">内心感悟</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('旅行场景',this)">旅行场景</button>
+        <button class="mode" style="flex:0 0 auto;padding:7px 12px" onclick="setShadowScene('社交闲聊',this)">社交闲聊</button>
+      </div>
+      <div id="shadowCard"></div>
+      <p class="small" id="shadowProg" style="text-align:center;margin-top:8px"></p>
+    </div>
+    <div class="card">
+      <h3>📚 本场景句子</h3>
+      <div id="shadowList"></div>
+    </div>
+  </section>
+
+  <!-- ============ 口语（Oral Output Log） ============ -->
+  <section id="oral" class="tab">
+    <h2>🎙️ 口语练习日志</h2>
+    <p class="hint">格式：日期｜话题｜卡点｜优化方案。录完发我话题+卡点，我也能记进去。</p>
+    <div class="card">
+      <h3>📋 练习记录</h3>
+      <div style="overflow-x:auto"><table id="oralTable"><thead><tr><th>日期</th><th>话题</th><th>录音链接</th><th>卡点</th><th>优化</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>➕ 添加练习</h3>
+      <div class="form-group"><label>练习话题</label><input class="input" id="o-topic" placeholder="my lazy Sunday morning"></div>
+      <div class="form-group"><label>录音链接</label><input class="input" id="o-link" placeholder="（可选）录音URL"></div>
+      <div class="form-group"><label>卡点词汇 & 薄弱点</label><input class="input" id="o-stuck" placeholder="卡在「赖床」表达"></div>
+      <div class="form-group"><label>优化方案</label><input class="input" id="o-fix" placeholder="补句型：sleep in"></div>
+      <button class="btn" onclick="addOral()">记录本次练习</button>
+    </div>
+  </section>
+
+  <!-- ============ 复盘（Weekly） ============ -->
+  <section id="review" class="tab">
+    <h2>🔍 每周复盘 & 目标</h2>
+
+    <div class="card">
+      <h3>📅 Weekly English Goal｜每周目标</h3>
+      <div class="form-group"><label>本周听力素材方向</label><input class="input" id="g1" placeholder="如：旅行 Vlog 交通住宿"></div>
+      <div class="form-group"><label>口语练习话题</label><input class="input" id="g2" placeholder="如：我的周末安排"></div>
+      <div class="form-group"><label>想攻克的场景</label><input class="input" id="g3" placeholder="如：旅行问路 / 日常感悟"></div>
+      <div class="form-group"><label>最低输出量</label><input class="input" id="g4" placeholder="5 条短句 + 5 天录音"></div>
+      <button class="btn block" onclick="saveForms()">保存目标</button>
+    </div>
+
+    <div class="card">
+      <h3>🔍 Weekly Review｜每周复盘</h3>
+      <div class="form-group"><label>① 哪些场景表达最容易卡壳？</label><textarea id="r1"></textarea></div>
+      <div class="form-group"><label>② 本周哪些句型成功运用在手帐/口述？</label><textarea id="r2"></textarea></div>
+      <div class="form-group"><label>③ 下周优先学习哪一类场景素材？</label><textarea id="r3"></textarea></div>
+      <button class="btn block" onclick="saveForms()">保存复盘</button>
+    </div>
+  </section>
+
+  <!-- ============ 方法（Method） ============ -->
+  <section id="method" class="tab">
+    <h2>🧭 学习方法</h2>
+
+    <div class="card">
+      <h3>🎯 核心定位</h3>
+      <p class="small">拒绝商务 / 财务 / 应试英语，只聚焦 <b>日常起居 · 内心感悟 · 旅行场景 · 社交闲聊</b>。目标：把"想法"直接组织成英文短句，摆脱脑中中译英。</p>
+    </div>
+
+    <div class="card">
+      <h3>✅ 学习范围（严格剔除商务/财务）</h3>
+      <p class="small"><b>纳入：</b>作息饮食、运动情绪、时间管理、手帐文案、反思治愈、旅行衣食住问路、爱好观影逛街。</p>
+      <p class="small" style="margin-top:8px"><b>排除：</b>财务报表、商务会议、邮件谈判、行业术语、学术长文、四六级阅读题型。</p>
+    </div>
+
+    <div class="card">
+      <h3>🔄 每日学习结构（30–60分钟，可拆碎片）</h3>
+      <div class="list-row"><span>① 输入 15–25min</span><span class="small">盲听短视频 → 抓可复用短句</span></div>
+      <div class="list-row"><span>② 改写内化 10–15min</span><span class="small">结合生活改写 → 录进句型库</span></div>
+      <div class="list-row"><span>③ 口语输出 10–20min</span><span class="small">只写关键词提纲 → 录音口述</span></div>
+      <div class="list-row"><span>💡 加速版</span><span class="small">说"来一段影子跟读" → 我陪练</span></div>
+    </div>
+
+    <div class="card">
+      <h3>🗣️ 影子跟读法（快速开口）</h3>
+      <p class="small">来源：@Kyson英语重启 笔记 #影子跟读。听一句生活化英文 → 几乎同步跟读 → 练口腔肌肉+语感+反应速度，不先背单词。</p>
+      <p class="small" style="margin-top:8px"><b>AI 陪练脚本：</b>我选 ≤40 秒素材 → 给原文+中文+卡点提示 → 你盲听1遍 → 跟读3轮 → 录1轮 → 发卡点我反馈 → 金句入库。</p>
+      <button class="btn block secondary" onclick="switchTab('today')">返回今日开始打卡</button>
+    </div>
+
+    <div class="card">
+      <h3>🗓️ 90 天三阶段</h3>
+      <div class="phase"><div class="phase-dot on"></div><div class="phase-name"><b>阶段1 · 破除翻译思维</b><br><span class="small">每天5句+手写手帐+2分钟录音</span></div><div class="phase-date">07-31~08-29</div></div>
+      <div class="phase"><div class="phase-dot"></div><div class="phase-name"><b>阶段2 · 连贯表达训练</b><br><span class="small">每周3话题即兴口述+旅行沟通</span></div><div class="phase-date">08-30~09-28</div></div>
+      <div class="phase"><div class="phase-dot"></div><div class="phase-name"><b>阶段3 · 塑造松弛语感</b><br><span class="small">模仿博主语气停顿+随机即兴</span></div><div class="phase-date">09-29~10-27</div></div>
+    </div>
+
+    <div class="card">
+      <h3>⚙️ 数据管理</h3>
+      <p class="small">你的打卡、句型、口语记录都只存在这台设备的浏览器里，不会上传。换手机或清缓存前记得先导出备份。</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn" onclick="exportData()">📤 导出备份</button>
+        <button class="btn secondary" onclick="importData()">📥 导入备份</button>
+        <button class="btn secondary" onclick="resetData()">🗑️ 重置数据</button>
+      </div>
+      <textarea id="io" style="display:none;width:100%;height:120px;margin-top:10px;font-size:11px;border:1px solid var(--line);border-radius:10px;padding:8px" placeholder="把备份文本粘贴到这里，再点一次「导入备份」"></textarea>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== 安全存储：localStorage 被禁用时降级到内存，按钮绝不失效 ===== */
+const mem = {};
+function lsGet(key){
+  try { return localStorage.getItem('wb_'+key); }
+  catch(e){ return Object.prototype.hasOwnProperty.call(mem,key) ? mem[key] : null; }
+}
+function lsSet(key,val){
+  try { localStorage.setItem('wb_'+key,val); }
+  catch(e){ mem[key]=val; }
+}
+
+/* ===== 数据读写 ===== */
+function getState(){
+  return {
+    streak:+(lsGet('streak')||0),
+    total:+(lsGet('total')||0),
+    input:+(lsGet('input')||0),
+    oral:+(lsGet('oral')||0),
+    shadow:+(lsGet('shadow')||0),
+    journal:+(lsGet('journal')||0),
+    last:lsGet('last')||'',
+    sentences:JSON.parse(lsGet('sentences')||'[]'),
+    oralLogs:JSON.parse(lsGet('oralLogs')||'[]'),
+    goal:JSON.parse(lsGet('goal')||'{}'),
+    review:JSON.parse(lsGet('review')||'{}')
+  };
+}
+function setState(s){
+  lsSet('streak',s.streak); lsSet('total',s.total); lsSet('input',s.input);
+  lsSet('oral',s.oral); lsSet('shadow',s.shadow); lsSet('journal',s.journal);
+  lsSet('last',s.last); lsSet('sentences',JSON.stringify(s.sentences));
+  lsSet('oralLogs',JSON.stringify(s.oralLogs)); lsSet('goal',JSON.stringify(s.goal));
+  lsSet('review',JSON.stringify(s.review));
+}
+function todayStr(){ return document.getElementById('todayDate').textContent.replace('今天 · ',''); }
+
+/* ===== Toast ===== */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+/* ===== Tab 切换 ===== */
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.nav-item[data-tab="'+id+'"]').classList.add('active');
+  if(id==='today'){ renderToday(); renderProfile(); renderTodayOne(); }
+  if(id==='sentence') renderSentences();
+  if(id==='oral') renderOral();
+  if(id==='shadow') renderShadow();
+}
+
+/* ===== 统计渲染 ===== */
+function renderToday(){
+  const s=getState();
+  document.getElementById('st-streak').textContent=s.streak;
+  document.getElementById('st-total').textContent=s.total;
+  document.getElementById('st-input').textContent=s.input;
+  document.getElementById('st-oral').textContent=s.oral;
+  document.getElementById('st-sent').textContent=s.sentences.length;
+  document.getElementById('st-review').textContent=s.sentences.filter(x=>!x.reviewedToday).length;
+  // 先复习预览
+  const due=s.sentences.filter(x=>!x.reviewedToday);
+  const pv=document.getElementById('reviewPreview');
+  if(!due.length){ pv.innerHTML='<p class="small">复习队列空。学完新句型后，它会自动出现在这里。</p>'; }
+  else{
+    const x=due[0];
+    pv.innerHTML='<div style="font-weight:600;font-size:14px;margin-bottom:4px">'+x.en+'</div><div class="small">'+(x.cn||'')+'</div><button class="btn block" style="margin-top:10px" onclick="switchTab(\'sentence\')">去复习页 ('+due.length+')</button>';
+  }
+}
+
+/* ===== 打卡动作 ===== */
+function doAction(type, targetTab){
+  const s=getState();
+  const today=todayStr();
+  if(s.last!==today){
+    const lastDate=s.last?new Date(s.last):null;
+    const cur=new Date(today);
+    const diff=lastDate?(cur-lastDate)/86400000:999;
+    s.streak = (diff===1)?s.streak+1:1;
+    s.total += 1;
+    s.last = today;
+    s.sentences.forEach(x=>x.reviewedToday=false);
+  }
+  s[type]=(s[type]||0)+1;
+  setState(s);
+  toast('✅ 已打卡：'+({input:'输入',oral:'口语',shadow:'影子跟读',journal:'写手帐'})[type]);
+  switchTab(targetTab);
+  renderToday();
+}
+function setMode(mode,el){
+  document.querySelectorAll('#today .mode').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+  lsSet('mode',mode);
+}
+
+/* ===== 句型库 ===== */
+function renderSentences(){
+  const s=getState();
+  const tb=document.querySelector('#sentenceTable tbody');
+  const due=s.sentences.filter(x=>!x.reviewedToday);
+  tb.innerHTML = s.sentences.length ? s.sentences.map((x,i)=>{
+    const isDue=!x.reviewedToday;
+    return '<tr><td>'+(i+1)+'</td><td><span class="tag">'+esc(x.scene)+'</span></td><td>'+esc(x.en)+'</td><td>'+esc(x.cn)+'</td><td>'+esc(x.use||'')+'</td><td>'+(isDue?'<button class="btn sm" onclick="markReviewed('+i+')">复习</button>':(x.date?'<span class="small">✅'+x.date+'</span>':'<span class="small">✅</span>'))+'</td></tr>';
+  }).join('') : '<tr><td colspan="6"><p class="empty">还没有句型。下方添加，或聊天让我录入。</p></td></tr>';
+}
+function addSentence(){
+  const scene=document.getElementById('s-scene').value.trim();
+  const en=document.getElementById('s-en').value.trim();
+  const cn=document.getElementById('s-cn').value.trim();
+  const use=document.getElementById('s-use').value.trim();
+  if(!en){toast('请输入原句');return;}
+  const s=getState();
+  s.sentences.push({scene,en,cn,use,date:'',reviewedToday:false});
+  setState(s);
+  document.getElementById('s-scene').value='';
+  document.getElementById('s-en').value='';
+  document.getElementById('s-cn').value='';
+  document.getElementById('s-use').value='';
+  renderSentences(); renderToday();
+  toast('已加入金库 + 复习队列');
+}
+function markReviewed(idx){
+  const s=getState();
+  if(s.sentences[idx]){ s.sentences[idx].reviewedToday=true; s.sentences[idx].date=todayStr(); }
+  setState(s); renderSentences(); renderToday();
+  toast('复习 +1');
+}
+
+/* ===== 口语日志 ===== */
+function renderOral(){
+  const s=getState();
+  const tb=document.querySelector('#oralTable tbody');
+  tb.innerHTML = s.oralLogs.length ? s.oralLogs.slice().reverse().map(x=>{
+    return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.topic)+'</td><td>'+(x.link?'<a href="'+esc(x.link)+'" target="_blank" style="color:var(--accent)">链接</a>':'—')+'</td><td>'+esc(x.stuck)+'</td><td>'+esc(x.fix)+'</td></tr>';
+  }).join('') : '<tr><td colspan="5"><p class="empty">还没有记录。下方添加，或录完发我话题+卡点。</p></td></tr>';
+}
+function addOral(){
+  const topic=document.getElementById('o-topic').value.trim();
+  if(!topic){toast('请输入练习话题');return;}
+  const s=getState();
+  const d=new Date();
+  const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  s.oralLogs.push({date:ds,topic,link:document.getElementById('o-link').value.trim(),stuck:document.getElementById('o-stuck').value.trim(),fix:document.getElementById('o-fix').value.trim()});
+  setState(s);
+  document.getElementById('o-topic').value='';
+  document.getElementById('o-link').value='';
+  document.getElementById('o-stuck').value='';
+  document.getElementById('o-fix').value='';
+  renderOral(); renderToday();
+  toast('已记录口语练习');
+}
+
+/* ===== 复盘 / 目标表单 ===== */
+function saveForms(){
+  const s=getState();
+  s.goal={g1:val('g1'),g2:val('g2'),g3:val('g3'),g4:val('g4')};
+  s.review={r1:val('r1'),r2:val('r2'),r3:val('r3')};
+  setState(s); toast('已保存');
+}
+function loadForms(){
+  const s=getState();
+  ['g1','g2','g3','g4'].forEach((id,i)=>{ if(s.goal&&s.goal[id]!==undefined) document.getElementById(id).value=s.goal[id]; });
+  ['r1','r2','r3'].forEach(id=>{ if(s.review&&s.review[id]!==undefined) document.getElementById(id).value=s.review[id]; });
+}
+function val(id){ return document.getElementById(id).value; }
+
+/* ===== 素材库 & 推送 ===== */
+const creators=[
+  {name:'英文手帐 / 双语手帐博主',tag:'手帐/计划',url:'在小红书 App 内搜索「英文手帐」「双语手帐」',why:'手帐 setup、周计划、目标设定表达',tip:'monthly spread、set intentions'},
+  {name:'海外生活 Vlog 博主',tag:'日常/社交',url:'在小红书 App 内搜索「英文vlog」「daily vlog 跟练」',why:'真实松弛口语、日常起居描述',tip:'genuinely、lowkey'},
+  {name:'旅行英文博主',tag:'旅行',url:'在小红书 App 内搜索「旅行英语」「出国口语」',why:'交通/住宿/餐厅/问路实用句',tip:'check in、how do I get to'},
+  {name:'治愈 / 内心感悟博主',tag:'内心/治愈',url:'在小红书 App 内搜索「英文治愈」「english journal」',why:'slow living、情绪表达',tip:'feel grounded'},
+  {name:'美食英文博主',tag:'旅行/美食',url:'在小红书 App 内搜索「美食英语」「food english」',why:'餐厅点餐、形容食物',tip:'packed with flavor'},
+  {name:'问路 / 城市攻略博主',tag:'旅行/问路',url:'在小红书 App 内搜索「城市英语」「问路英语」',why:'交通、景点、突发状况',tip:'watch out for'}
+];
+function card(c){ return '<div class="feed-card"><div class="top"><div class="name">'+c.name+'</div><span class="tag">'+c.tag+'</span></div><div class="why" style="margin:4px 0">📱 '+c.url+'</div><div class="why">'+c.why+'</div><div class="tip">🎯 '+c.tip+'</div></div>'; }
+function renderCreator(){ document.getElementById('creatorList').innerHTML=creators.map(card).join(''); }
+function renderPush(){ document.getElementById('pushFeed').innerHTML=creators.slice(0,4).map(card).join(''); }
+
+/* ===== 跟读练习（影子跟读，离线 TTS，无需传录音） ===== */
+const packs=[
+  {scene:'日常起居',en:"I've been feeling a bit off lately.",cn:'最近状态有点不对。'},
+  {scene:'日常起居',en:"I'm just gonna take it easy today.",cn:'今天我就想放松躺平。'},
+  {scene:'日常起居',en:"My morning routine helps me start the day calm.",cn:'晨间routine让我平静地开启一天。'},
+  {scene:'日常起居',en:"I totally lost track of time scrolling my phone.",cn:'刷手机刷得完全忘了时间。'},
+  {scene:'日常起居',en:"I'm running low on sleep this week.",cn:'这周睡眠不太够。'},
+  {scene:'内心感悟',en:"Lately I've been thinking about what really matters.",cn:'最近常想什么才真正重要。'},
+  {scene:'内心感悟',en:"Writing things down always clears my head.",cn:'把想法写下来总能理清思绪。'},
+  {scene:'内心感悟',en:"Some days are just for slowing down and doing nothing.",cn:'有些日子就是用来慢下来、什么都不做。'},
+  {scene:'内心感悟',en:"I'm learning to be okay with not being productive.",cn:'我在学着接受"不高效"也没关系。'},
+  {scene:'内心感悟',en:"A quiet evening like this is exactly what I needed.",cn:'这样一个安静的夜晚正是我需要的。'},
+  {scene:'旅行场景',en:"Could you recommend a good local spot to eat?",cn:'能推荐个当地好吃的地儿吗？'},
+  {scene:'旅行场景',en:"Is this the right stop for the old town?",cn:'老城是这一站下吗？'},
+  {scene:'旅行场景',en:"We ended up wandering into the cutest little café.",cn:'我们误打误撞进了一家超可爱的小咖啡馆。'},
+  {scene:'旅行场景',en:"The view from up here is absolutely worth the climb.",cn:'爬上来这风景绝对值。'},
+  {scene:'旅行场景',en:"Do you know where I can grab a sim card nearby?",cn:'这附近哪能买sim卡？'},
+  {scene:'社交闲聊',en:"What have you been binge-watching lately?",cn:'你最近在追什么剧？'},
+  {scene:'社交闲聊',en:"We just popped into a few shops for fun.",cn:'我们就随便逛了逛店。'},
+  {scene:'社交闲聊',en:"I'm not much of a planner — I like to go with the flow.",cn:'我不太爱计划，喜欢随性。'},
+  {scene:'社交闲聊',en:"Have you read anything good recently?",cn:'最近有读到什么好书吗？'},
+  {scene:'社交闲聊',en:"It's been ages since we last caught up.",cn:'我们好久没好好叙旧了。'}
+];
+let shadowScene='全部', shadowQueue=[], shadowIdx=0;
+function getShadowQueue(){
+  const user=getState().sentences.map(x=>({scene:x.scene||'未分类',en:x.en,cn:x.cn,user:true}));
+  const base=packs.map(x=>({...x,user:false}));
+  const all=user.concat(base);
+  return shadowScene==='全部'?all:all.filter(x=>x.scene===shadowScene);
+}
+function setShadowScene(s,el){
+  shadowScene=s; shadowIdx=0;
+  document.querySelectorAll('#shadow .mode').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+  renderShadow();
+}
+function renderShadow(){
+  shadowQueue=getShadowQueue();
+  const card=document.getElementById('shadowCard');
+  if(!shadowQueue.length){ card.innerHTML='<p class="empty">本场景暂无句子。去「句型库」添加，或换个场景。</p>'; return; }
+  if(shadowIdx>=shadowQueue.length) shadowIdx=0;
+  const x=shadowQueue[shadowIdx];
+  card.innerHTML=
+    '<span class="tag">'+esc(x.scene)+'</span>'+(x.user?' <span class="tag">我的</span>':'')+
+    '<div style="font-size:19px;font-weight:600;margin:10px 0;line-height:1.5">'+esc(x.en)+'</div>'+
+    '<div class="small" style="margin-bottom:12px">'+esc(x.cn)+'</div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+      '<button class="btn" onclick="shadowSpeak(0.95)">🔊 听原声</button>'+
+      '<button class="btn secondary" onclick="shadowSpeak(0.6)">🐢 慢速</button>'+
+      '<button class="btn secondary" onclick="shadowRecord()">🎤 自录对比</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px">'+
+      '<button class="btn" style="flex:1" onclick="shadowDone()">✅ 会了</button>'+
+      '<button class="btn secondary" style="flex:1" onclick="shadowSkip()">⏭ 跳过</button>'+
+    '</div>'+
+    '<div id="recBox" style="margin-top:10px"></div>';
+  document.getElementById('shadowProg').textContent='进度 '+(shadowIdx+1)+' / '+shadowQueue.length;
+  renderShadowList();
+}
+function shadowSpeak(rate){
+  if(!('speechSynthesis' in window)){ toast('当前浏览器不支持朗读'); return; }
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(shadowQueue[shadowIdx].en);
+    u.lang='en-US'; u.rate=rate; u.pitch=1;
+    const vs=window.speechSynthesis.getVoices();
+    const v=vs.find(v=>/en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang));
+    if(v) u.voice=v;
+    window.speechSynthesis.speak(u);
+  }catch(e){ toast('朗读不可用'); }
+}
+function shadowDone(){
+  const x=shadowQueue[shadowIdx];
+  if(x.user){
+    const s=getState(); const i=s.sentences.findIndex(y=>y.en===x.en);
+    if(i>=0){ s.sentences[i].reviewedToday=true; s.sentences[i].date=todayStr(); setState(s); }
+  } else {
+    const done=JSON.parse(lsGet('shadowDone')||'[]');
+    if(!done.includes(x.en)){ done.push(x.en); lsSet('shadowDone',JSON.stringify(done)); }
+  }
+  const st=getState(); st.shadow=(st.shadow||0)+1; setState(st);
+  toast('👏 跟读 +1');
+  shadowIdx++; renderShadow(); renderToday();
+}
+function shadowSkip(){ shadowIdx++; renderShadow(); }
+function shadowRecord(){
+  const box=document.getElementById('recBox');
+  if(!navigator.mediaDevices||!window.MediaRecorder){ box.innerHTML='<p class="small">此设备不支持录音，可直接跟读。</p>'; return; }
+  box.innerHTML='<p class="small">🎤 录音仅在本地对比，不上传。点「停止」回放。</p><button class="btn sm" onclick="stopRec()">⏹ 停止</button>';
+  try{
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+      const mr=new MediaRecorder(stream); const chunks=[];
+      mr.ondataavailable=e=>chunks.push(e.data);
+      mr.onstop=()=>{ const url=URL.createObjectURL(new Blob(chunks)); box.innerHTML='<audio controls src="'+url+'"></audio>'; stream.getTracks().forEach(t=>t.stop()); };
+      mr.start(); window._mr=mr;
+    }).catch(()=>{ box.innerHTML='<p class="small">无法访问麦克风，直接跟读即可。</p>'; });
+  }catch(e){ box.innerHTML='<p class="small">录音不可用，直接跟读即可。</p>'; }
+}
+function stopRec(){ if(window._mr) window._mr.stop(); }
+function renderShadowList(){
+  document.getElementById('shadowList').innerHTML=shadowQueue.map((x,i)=>
+    '<div class="list-row" onclick="shadowJump('+i+')"><span><span class="tag">'+esc(x.scene)+'</span>'+esc(x.en)+'</span><span class="small">'+(i===shadowIdx?'▶':'')+'</span></div>'
+  ).join('');
+}
+function shadowJump(i){ shadowIdx=i; renderShadow(); }
+
+/* ===== 我的档案（PRO）个性化 + 今日一句 ===== */
+const defaultProfile={level:'大学六级（被动认识、主动调取难、习惯中译英）',scenes:'手帐 / 日常起居 / 旅行 / 内心感悟',goal:'90天：独立口述2–4分钟 + 自由写双语手帐 + 出境旅行沟通无障碍'};
+let todayOne={};
+function getProfile(){ try{ return JSON.parse(lsGet('profile'))||defaultProfile; }catch(e){ return defaultProfile; } }
+function renderProfile(){
+  const p=getProfile();
+  document.getElementById('profileView').innerHTML=
+    '<div class="list-row"><span>当前水平</span><span class="small">'+esc(p.level)+'</span></div>'+
+    '<div class="list-row"><span>重点场景</span><span class="small">'+esc(p.scenes)+'</span></div>'+
+    '<div class="list-row"><span>90天目标</span><span class="small">'+esc(p.goal)+'</span></div>';
+}
+function editProfile(){
+  const p=getProfile();
+  const level=prompt('当前英语水平 / 特点：',p.level); if(level===null) return;
+  const scenes=prompt('重点生活场景（逗号分隔）：',p.scenes); if(scenes===null) return;
+  const goal=prompt('90天核心目标：',p.goal); if(goal===null) return;
+  lsSet('profile',JSON.stringify({level,scenes,goal}));
+  renderProfile(); renderTodayOne(); toast('档案已更新');
+}
+function speakText(t){
+  if(!('speechSynthesis' in window)){ toast('当前浏览器不支持朗读'); return; }
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=0.95;
+    const vs=window.speechSynthesis.getVoices();
+    const v=vs.find(v=>/en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang));
+    if(v) u.voice=v;
+    window.speechSynthesis.speak(u);
+  }catch(e){ toast('朗读不可用'); }
+}
+function renderTodayOne(){
+  const p=getProfile();
+  const pref=(p.scenes||'').split(/[,，/、]/)[0].trim();
+  const pool=packs.filter(x=>pref && (x.scene.indexOf(pref)>=0 || pref.indexOf(x.scene)>=0));
+  const src=pool.length?pool:packs;
+  todayOne=src[Math.floor(Math.random()*src.length)];
+  document.getElementById('todayOneTag').textContent=todayOne.scene;
+  document.getElementById('todayOneBody').innerHTML=
+    '<div style="font-size:18px;font-weight:600;margin:8px 0">'+esc(todayOne.en)+'</div>'+
+    '<div class="small" style="margin-bottom:10px">'+esc(todayOne.cn)+'</div>'+
+    '<button class="btn" onclick="speakText(todayOne.en)">🔊 听原声</button> '+
+    '<button class="btn secondary" onclick="switchTab(\'shadow\')">去跟读 →</button>';
+}
+
+/* ===== 工具 ===== */
+function esc(s){ return (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+/* ===== 备份导出 / 导入 ===== */
+function allKeys(){
+  const set = new Set(Object.keys(mem));
+  try{ Object.keys(localStorage).forEach(k=>{ if(k.startsWith('wb_')) set.add(k.slice(3)); }); }catch(e){}
+  return [...set];
+}
+function exportData(){
+  const obj = {};
+  allKeys().forEach(k=>{ const v = lsGet(k); if(v!==null && v!==undefined) obj[k]=v; });
+  const txt = JSON.stringify({v:1, at:new Date().toISOString(), data:obj});
+  const ta = document.getElementById('io');
+  ta.style.display='block'; ta.value = txt; ta.select();
+  try{
+    const blob = new Blob([txt], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '英语工作台备份_'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    toast('已导出（也可直接复制下方文本）');
+  }catch(e){ toast('已生成备份文本，请长按复制'); }
+}
+function importData(){
+  const ta = document.getElementById('io');
+  if(ta.style.display==='none' || !ta.value.trim()){
+    ta.style.display='block'; ta.focus();
+    toast('请把备份文本粘贴到下方，再点一次导入'); return;
+  }
+  try{
+    const o = JSON.parse(ta.value.trim());
+    const d = o.data || o;
+    Object.keys(d).forEach(k=>lsSet(k, d[k]));
+    ta.value=''; ta.style.display='none';
+    renderToday(); renderProfile(); renderTodayOne(); renderSentences(); renderOral(); loadForms();
+    toast('备份已恢复 ✅');
+  }catch(e){ toast('备份格式不对，请检查'); }
+}
+
+/* ===== 重置 ===== */
+function resetData(){
+  if(!confirm('确定清除本机所有打卡/复习/记录？')) return;
+  Object.keys(mem).forEach(k=>delete mem[k]);
+  try{ Object.keys(localStorage).filter(x=>x.startsWith('wb_')).forEach(x=>localStorage.removeItem(x)); }catch(e){}
+  renderToday(); renderSentences(); renderOral(); loadForms();
+  toast('本地数据已重置');
+}
+
+/* ===== 初始化 ===== */
+(function init(){
+  const d=new Date();
+  document.getElementById('todayDate').textContent='今天 · '+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  renderToday(); renderProfile(); renderTodayOne(); renderCreator(); renderPush(); loadForms();
+  const m=lsGet('mode');
+  if(m){ const arr=document.querySelectorAll('#today .mode'); arr.forEach(x=>x.classList.remove('active')); (m==='light'?arr[1]:arr[0]).classList.add('active'); }
+})();
+</script>
+
+</body>
+</html>
