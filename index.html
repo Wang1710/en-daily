@@ -61,7 +61,8 @@
   .feed-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--cream)}
   .feed-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
   .feed-card .name{font-weight:700;font-size:13px}
-  .feed-card a{color:var(--accent);text-decoration:none;font-size:11px;word-break:break-all;display:inline-block;margin:4px 0}
+  .feed-card a{color:var(--accent);text-decoration:none;font-size:12px;word-break:break-all;display:inline-block;margin:4px 0;background:#fff7f0;padding:5px 8px;border-radius:8px;border:1px solid var(--line)}
+  .feed-card .source-app{font-size:12px;color:var(--muted);background:var(--cream);padding:5px 8px;border-radius:8px;display:inline-block}
   .feed-card .why{font-size:12px;color:#55534d;margin:6px 0}
   .feed-card .tip{font-size:11px;color:var(--muted);background:var(--green-soft);border-radius:8px;padding:6px 8px}
   .empty{text-align:center;color:var(--muted);font-size:12px;padding:18px}
@@ -504,18 +505,24 @@ function val(id){ return document.getElementById(id).value; }
 
 /* ===== 素材库 & 推送 ===== */
 const creators=[
-  {name:"小宇宙《慢播》",tag:"播客/日常",url:"小宇宙 App 搜「慢播」",why:"面向初学者的慢速英语播客，主题围绕生活、兴趣、成长，逐句讲解，语速舒缓",tip:"适合通勤盲听，抓 3 句写进句型库"},
-  {name:"喜马拉雅《慢速英语播客》",tag:"播客/入门",url:"喜马拉雅 App 搜「慢速英语播客」",why:"迷你故事、短剧、真实对话、发音指南，节目短，适合每天一集",tip:"跟读整段对话，而非单句"},
-  {name:"飞岩播客 feiyanpod.com",tag:"播客/字幕",url:"浏览器打开 feiyanpod.com",why:"带字幕的英文播客平台，EnglishPod 系列，可边听边看文本",tip:"先盲听一遍，再看字幕对答案"},
-  {name:"B站《日常英语播客》合集",tag:"视频/日常",url:"B 站搜「日常英语播客 Daily English Podcast」",why:"国内可直接看，油管热门英语播客搬运合集，有中英字幕",tip:"选 5 分钟内的短集做影子跟读"},
-  {name:"B站 英文 Vlog 跟练",tag:"视频/Vlog",url:"B 站搜「英文vlog 跟读」「daily vlog 英语」",why:"真实生活 Vlog，松弛口语、日常起居描述，语速接近真人",tip:"重点抓 filler words 和语气词"},
-  {name:"小红书 英文手帐",tag:"手帐/双语",url:"小红书 App 搜「英文手帐」「双语手帐」",why:"手帐排版、周计划、目标设定的英文表达",tip:"monthly spread / set intentions"},
-  {name:"小红书 治愈英文",tag:"内心/治愈",url:"小红书 App 搜「英文治愈」「english journal」",why:"slow living、情绪表达、内省类文案",tip:"feel grounded / romanticize the mundane"},
-  {name:"小红书 旅行英语",tag:"旅行",url:"小红书 App 搜「旅行英语」「出国口语」",why:"交通、住宿、餐厅、问路的实用句",tip:"check in / how do I get to"},
-  {name:"CoffeeTalk Blog",tag:"网站/口语块",url:"浏览器打开 coffee-talk.net/blog",why:"主张「学整块短语而非单词」，收录真实高频对话块",tip:"把 chunk 当一个整体记，不要拆开"},
-  {name:"English Aura 情绪词库",tag:"网站/写作",url:"浏览器搜 englishaura.com 40 emotion words",why:"40 个进阶情绪词，每个带定义、例句、同义词，专治手帐词穷",tip:"别再写 happy / sad，换 serene / melancholy"}
+  {name:"小宇宙《慢播》",tag:"播客/日常",linkText:"打开小宇宙 App 搜「慢播」",linkUrl:"",why:"面向初学者的慢速英语播客，主题围绕生活、兴趣、成长，逐句讲解，语速舒缓",tip:"适合通勤盲听，抓 3 句写进句型库"},
+  {name:"喜马拉雅《慢速英语播客》",tag:"播客/入门",linkText:"点我在线收听",linkUrl:"https://www.ximalaya.com/album/117816948",why:"迷你故事、短剧、真实对话、发音指南，节目短，适合每天一集",tip:"跟读整段对话，而非单句"},
+  {name:"飞岩播客 feiyanpod.com",tag:"播客/字幕",linkText:"https://www.feiyanpod.com",linkUrl:"https://www.feiyanpod.com",why:"带字幕的英文播客平台，EnglishPod 系列，可边听边看文本",tip:"先盲听一遍，再看字幕对答案"},
+  {name:"B站《日常英语播客》合集",tag:"视频/日常",linkText:"点我打开 B站合集",linkUrl:"https://www.bilibili.com/list/ml1424201277?oid=115524721773144&bvid=BV1ZLkfBvEMX",why:"国内可直接看，油管热门英语播客搬运合集，有中英字幕",tip:"选 5 分钟内的短集做影子跟读"},
+  {name:"SpeakVlog",tag:"视频/Vlog",linkText:"https://speakvlog.com",linkUrl:"https://speakvlog.com",why:"全英 Vlog 学习平台，200+ 真实视频，双语字幕、逐句精听、影子跟读、录音对比",tip:"重点抓 filler words 和语气词"},
+  {name:"Vocal-vlog",tag:"视频/Vlog",linkText:"https://vocal-vlog.com",linkUrl:"https://vocal-vlog.com",why:"面向中文初学者，真实英文 Vlog + 影子跟读 + 逐句循环 + 双语字幕",tip:"适合每天 10 分钟短练"},
+  {name:"小红书 英文手帐",tag:"手帐/双语",linkText:"打开小红书 App 搜「英文手帐」",linkUrl:"",why:"手帐排版、周计划、目标设定的英文表达",tip:"monthly spread / set intentions"},
+  {name:"小红书 治愈英文",tag:"内心/治愈",linkText:"打开小红书 App 搜「英文治愈」",linkUrl:"",why:"slow living、情绪表达、内省类文案",tip:"feel grounded / romanticize the mundane"},
+  {name:"小红书 旅行英语",tag:"旅行",linkText:"打开小红书 App 搜「旅行英语」",linkUrl:"",why:"交通、住宿、餐厅、问路的实用句",tip:"check in / how do I get to"},
+  {name:"CoffeeTalk Blog",tag:"网站/口语块",linkText:"https://www.coffee-talk.net/blog",linkUrl:"https://www.coffee-talk.net/blog",why:"主张「学整块短语而非单词」，收录真实高频对话块",tip:"把 chunk 当一个整体记，不要拆开"},
+  {name:"English Aura 情绪词库",tag:"网站/写作",linkText:"https://englishaura.com/40-must-know-emotion-words-for-journaling/",linkUrl:"https://englishaura.com/40-must-know-emotion-words-for-journaling/",why:"40 个进阶情绪词，每个带定义、例句、同义词，专治手帐词穷",tip:"别再写 happy / sad，换 serene / melancholy"}
 ];
-function card(c){ return '<div class="feed-card"><div class="top"><div class="name">'+c.name+'</div><span class="tag">'+c.tag+'</span></div><div class="why" style="margin:4px 0">📱 '+c.url+'</div><div class="why">'+c.why+'</div><div class="tip">🎯 '+c.tip+'</div></div>'; }
+function card(c){
+  const link = c.linkUrl
+    ? '<a class="source-link" href="'+esc(c.linkUrl)+'" target="_blank" rel="noopener">↗ '+esc(c.linkText)+'</a>'
+    : '<span class="source-app">📱 '+esc(c.linkText)+'</span>';
+  return '<div class="feed-card"><div class="top"><div class="name">'+esc(c.name)+'</div><span class="tag">'+esc(c.tag)+'</span></div><div style="margin:6px 0">'+link+'</div><div class="why">'+esc(c.why)+'</div><div class="tip">🎯 '+esc(c.tip)+'</div></div>';
+}
 function renderCreator(){ document.getElementById('creatorList').innerHTML=creators.map(card).join(''); }
 function renderPush(){ document.getElementById('pushFeed').innerHTML=creators.slice(0,4).map(card).join(''); }
 
