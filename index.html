@@ -55,6 +55,10 @@
   .action .icon{font-size:24px;margin-bottom:5px}
   .action .t{font-size:13px;font-weight:600;margin-bottom:2px}
   .action .s{font-size:10px;color:var(--muted)}
+  .action.done{background:var(--green-soft);border-color:var(--green);position:relative}
+  .action.done .t{color:var(--green)}
+  .action .done-badge{position:absolute;top:6px;right:8px;color:var(--green);font-weight:700;font-size:13px}
+  .daily-prog{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
   .btn{display:inline-block;background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer}
   .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
   .fab{position:fixed;bottom:72px;right:18px;width:58px;height:58px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 4px 16px rgba(111,156,118,.5);cursor:pointer;z-index:55;transition:transform .15s}
@@ -202,11 +206,12 @@
         <div class="mode" onclick="setMode('light',this)">忙/累日 ≈10分钟</div>
       </div>
       <div class="action-grid">
-        <div class="action" onclick="doAction('input','material')"><div class="icon">🎧</div><div class="t">输入</div><div class="s">盲听 Vlog 抓短句</div></div>
-        <div class="action" onclick="doAction('oral','training')"><div class="icon">🎙️</div><div class="t">口语</div><div class="s">2 分钟录音口述</div></div>
-        <div class="action" onclick="doAction('shadow','training')"><div class="icon">🗣️</div><div class="t">影子跟读</div><div class="s">听原声+跟读</div></div>
-        <div class="action" onclick="doAction('journal','sentence')"><div class="icon">📝</div><div class="t">写手帐</div><div class="s">双语写 1–2 句</div></div>
+        <div class="action" data-act="input" onclick="doAction('input','material')"><div class="icon">🎧</div><div class="t">输入</div><div class="s">盲听 Vlog 抓短句</div></div>
+        <div class="action" data-act="oral" onclick="doAction('oral','training')"><div class="icon">🎙️</div><div class="t">口语</div><div class="s">2 分钟录音口述</div></div>
+        <div class="action" data-act="shadow" onclick="doAction('shadow','training')"><div class="icon">🗣️</div><div class="t">影子跟读</div><div class="s">听原声+跟读</div></div>
+        <div class="action" data-act="journal" onclick="doAction('journal','sentence')"><div class="icon">📝</div><div class="t">写手帐</div><div class="s">双语写 1–2 句</div></div>
       </div>
+      <div class="daily-prog" id="dailyProg"></div>
     </div>
 
     <div class="card">
@@ -321,6 +326,7 @@
           <button class="btn" onclick="recallNext(true)">✅ 记住了</button>
         </div>
         <p class="small" id="recallStat" style="margin-top:8px;color:var(--muted)"></p>
+        <p class="small" id="recallRate" style="margin-top:4px;color:var(--green);font-weight:600"></p>
       </div>
     </div>
 
@@ -505,7 +511,9 @@ function getState(){
     sentences:JSON.parse(lsGet('sentences')||'[]'),
     oralLogs:JSON.parse(lsGet('oralLogs')||'[]'),
     goal:JSON.parse(lsGet('goal')||'{}'),
-    review:JSON.parse(lsGet('review')||'{}')
+    review:JSON.parse(lsGet('review')||'{}'),
+    daily:JSON.parse(lsGet('daily')||'{}'),
+    recall:JSON.parse(lsGet('recall')||'{}')
   };
 }
 function setState(s){
@@ -514,6 +522,7 @@ function setState(s){
   lsSet('last',s.last); lsSet('sentences',JSON.stringify(s.sentences));
   lsSet('oralLogs',JSON.stringify(s.oralLogs)); lsSet('goal',JSON.stringify(s.goal));
   lsSet('review',JSON.stringify(s.review));
+  lsSet('daily',JSON.stringify(s.daily||{})); lsSet('recall',JSON.stringify(s.recall||{}));
 }
 function todayStr(){ return document.getElementById('todayDate').textContent.replace('今天 · ',''); }
 
@@ -558,7 +567,26 @@ function renderToday(){
     const x=due[0];
     pv.innerHTML='<div style="font-weight:600;font-size:14px;margin-bottom:4px">'+x.en+'</div><div class="small">'+(x.cn||'')+'</div><button class="btn block" style="margin-top:10px" onclick="switchTab(\'sentence\')">去复习页 ('+due.length+')</button>';
   }
-  renderRecent(); renderWeeklyPlan();
+  renderRecent(); renderWeeklyPlan(); renderChecklist();
+}
+function renderChecklist(){
+  const s=getState();
+  const today=todayStr();
+  if(!s.daily || s.daily.date!==today) s.daily={date:today, done:{}};
+  const types=['input','oral','shadow','journal'];
+  const names={input:'输入',oral:'口语',shadow:'影子跟读',journal:'写手帐'};
+  let done=0;
+  document.querySelectorAll('#today .action[data-act]').forEach(a=>{
+    const t=a.getAttribute('data-act');
+    const ok=!!s.daily.done[t];
+    if(ok) done++;
+    a.classList.toggle('done', ok);
+    let badge=a.querySelector('.done-badge');
+    if(ok && !badge){ badge=document.createElement('span'); badge.className='done-badge'; badge.textContent='✓'; a.appendChild(badge); }
+    else if(!ok && badge){ badge.remove(); }
+  });
+  const prog=document.getElementById('dailyProg');
+  if(prog) prog.textContent='今日完成 '+done+'/'+types.length+(done===types.length?' · 全搞定 🎉':(done?' · 继续':' · 从任意一项开始'));
 }
 function renderRecent(){
   const s=getState();
@@ -578,7 +606,8 @@ function renderWeeklyPlan(){
     weeks=Math.max(1, Math.min(6, Math.floor(diff/7)+1));
   }
   fill.style.width=(weeks/6*100)+'%';
-  lab.textContent=(start?('第 '+weeks+' 周 / 6 周'):'刚开始 · 第 1 周 / 6 周');
+  const phase = weeks<=4 ? '阶段1 · 破除翻译思维' : (weeks<=9 ? '阶段2 · 连贯表达' : '阶段3 · 松弛语感');
+  lab.textContent=(start?('第 '+weeks+' 周 / 6 周'):'刚开始 · 第 1 周 / 6 周')+'　·　'+phase;
 }
 let recallIdx=-1;
 function renderRecall(){
@@ -592,6 +621,8 @@ function renderRecall(){
   const rv=document.getElementById('recallReveal'); if(rv) rv.style.display='';
   const bt=document.getElementById('recallBtns'); if(bt) bt.style.display='none';
   const st=document.getElementById('recallStat'); if(st) st.textContent='';
+  const rt=document.getElementById('recallRate');
+  if(rt){ const r=s.recall||{remembered:0,total:0}; rt.textContent = (r.total>0)?('记住率 '+Math.round(r.remembered/r.total*100)+'%（'+r.remembered+'/'+r.total+'）'):''; }
 }
 function recallReveal(){
   const en=document.getElementById('recallEn'); if(en) en.style.display='';
@@ -600,8 +631,16 @@ function recallReveal(){
   if(bt){ bt.style.display='flex'; bt.style.gap='8px'; bt.style.justifyContent='center'; bt.style.marginTop='10px'; }
 }
 function recallNext(remembered){
+  const s=getState();
+  if(!s.recall) s.recall={remembered:0,total:0};
+  s.recall.total=(s.recall.total||0)+1;
+  if(remembered) s.recall.remembered=(s.recall.remembered||0)+1;
+  setState(s);
+  const rate=Math.round((s.recall.remembered/s.recall.total)*100);
   const st=document.getElementById('recallStat');
-  if(st) st.textContent = remembered?'👏 记住了，保持！':'🔁 没记住，多刷几遍这句。';
+  if(st) st.textContent = (remembered?'👏 记住了，保持！':'🔁 没记住，多刷几遍这句。')+'　记住率 '+rate+'%（'+s.recall.remembered+'/'+s.recall.total+'）';
+  const rt=document.getElementById('recallRate');
+  if(rt) rt.textContent='记住率 '+rate+'%（'+s.recall.remembered+'/'+s.recall.total+'）';
   toast(remembered?'✅ 记住了':'🔁 下一句');
   renderRecall();
 }
@@ -620,6 +659,9 @@ function doAction(type, targetTab){
     s.sentences.forEach(x=>x.reviewedToday=false);
   }
   s[type]=(s[type]||0)+1;
+  // 今日完成度：记录当天做过的动作类型
+  if(!s.daily || s.daily.date!==today) s.daily={date:today, done:{}};
+  if(['input','oral','shadow','journal'].includes(type)) s.daily.done[type]=true;
   setState(s);
   toast('✅ 已打卡：'+({input:'输入',oral:'口语',shadow:'影子跟读',journal:'写手帐'})[type]);
   switchTab(targetTab);
