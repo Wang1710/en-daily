@@ -90,6 +90,41 @@
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
   .hint{font-size:11px;color:var(--accent);margin-top:8px;line-height:1.5}
   @media (max-width:360px){.nav{width:62px}.main{padding:12px}.action .s{font-size:9px}}
+  /* ===== 新建句子 4 步向导 ===== */
+  .stepper{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative}
+  .stepper::before{content:'';position:absolute;top:13px;left:10%;right:10%;height:2px;background:var(--line);z-index:0}
+  .step{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;color:var(--muted);font-size:11px}
+  .step .dot{width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);transition:.2s}
+  .step.active{color:var(--green);font-weight:600}
+  .step.active .dot{background:var(--green);border-color:var(--green);color:#fff}
+  .step.done .dot{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+  .cap-step{animation:fade .2s}
+  .rec-box{text-align:center;padding:20px;background:var(--cream);border-radius:14px;margin-bottom:12px}
+  .rec-time{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:1px}
+  .rec-status{font-size:12px;color:var(--muted);margin:4px 0 14px}
+  .mic-btn{width:66px;height:66px;border-radius:50%;border:0;background:var(--green);color:#fff;font-size:26px;cursor:pointer;box-shadow:0 6px 16px rgba(111,156,118,.4);transition:.15s}
+  .mic-btn:active{transform:scale(.93)}
+  .mic-btn.recording{background:var(--accent);animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,138,94,.5)}50%{box-shadow:0 0 0 12px rgba(201,138,94,0)}}
+  .or-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:4px 0 10px}
+  .or-line::before,.or-line::after{content:'';flex:1;height:1px;background:var(--line)}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap}
+  .scene-chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--line);background:#fff;color:var(--muted);font-size:13px;cursor:pointer;transition:.15s}
+  .scene-chip.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+  /* ===== 句型库 场景卡 + 卡片流 ===== */
+  .scene-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .scene-card{padding:10px 14px;border-radius:14px;background:var(--cream);border:1.5px solid var(--line);cursor:pointer;min-width:72px;text-align:center;transition:.15s}
+  .scene-card .nm{font-size:13px;color:var(--ink);font-weight:600}
+  .scene-card .ct{font-size:11px;color:var(--muted);margin-top:2px}
+  .scene-card.active{background:var(--green-soft);border-color:var(--green)}
+  .scene-card.active .nm{color:var(--green)}
+  .sentence-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+  .sentence-card .row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .sentence-card .cn{font-size:15px;color:var(--ink);font-weight:600;line-height:1.4}
+  .sentence-card .en{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+  .sentence-card .meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .sentence-card .actions{display:flex;gap:8px;align-items:center}
+  .play-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--green)}
 </style>
 </head>
 <body>
@@ -200,7 +235,8 @@
 
     <div class="card">
       <h3>📋 句型清单</h3>
-      <div style="overflow-x:auto"><table id="sentenceTable"><thead><tr><th>#</th><th>场景</th><th>原句</th><th>改写</th><th>使用记录</th><th>操作</th></tr></thead><tbody></tbody></table></div>
+      <div class="scene-cards" id="sceneCards"></div>
+      <div id="sentenceList"></div>
     </div>
 
     <div class="card">
@@ -335,39 +371,63 @@
 
 <!-- ============ 快速造句弹窗 ============ -->
 <div id="captureModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px">
-  <div style="background:var(--card);border-radius:18px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;padding:16px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3 style="font-size:17px">➕ 快速造句入库</h3>
-      <span style="font-size:20px;cursor:pointer" onclick="closeCapture()">×</span>
-    </div>
-    <p class="small" style="margin-bottom:10px">用中文说出你此刻想说的真实生活句子，系统帮你转写、分类，你再补英文翻译。</p>
-
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <button class="btn" id="capTabVoice" onclick="setCapTab('voice')" style="flex:1">🎙 语音录入</button>
-      <button class="btn secondary" id="capTabType" onclick="setCapTab('type')" style="flex:1">⌨ 打字录入</button>
+  <div style="background:var(--card);border-radius:18px;max-width:440px;width:100%;max-height:92vh;overflow-y:auto;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="font-size:17px">➕ 新建句子</h3>
+      <span style="font-size:22px;cursor:pointer;color:var(--muted)" onclick="closeCapture()">×</span>
     </div>
 
-    <div id="capVoice">
-      <textarea id="capInputVoice" class="input" style="height:80px;width:100%;margin-bottom:10px" placeholder="点下方麦克风说中文，识别结果会显示在这里。例如：周五晚上最适合窝在沙发上看电影。"></textarea>
-      <div style="text-align:center;padding:18px;background:var(--cream);border-radius:14px;margin-bottom:12px">
-        <div id="micStatus" style="font-size:13px;color:var(--muted);margin-bottom:10px">点麦克风开始说中文</div>
-        <button id="micBtn" class="btn" style="border-radius:50%;width:64px;height:64px;font-size:24px" onclick="toggleMic()">🎙</button>
+    <!-- 步骤指示器 -->
+    <div class="stepper" id="capStepper">
+      <div class="step active" data-step="1"><span class="dot">1</span><span class="lab">录音</span></div>
+      <div class="step" data-step="2"><span class="dot">2</span><span class="lab">转写</span></div>
+      <div class="step" data-step="3"><span class="dot">3</span><span class="lab">翻译</span></div>
+      <div class="step" data-step="4"><span class="dot">4</span><span class="lab">归类</span></div>
+    </div>
+
+    <!-- 步骤1：录音 / 打字 -->
+    <div class="cap-step" id="capStep1">
+      <p class="small" style="margin-bottom:12px">用中文说一句你此刻正在做/想说的事。真实场景的句子才练得出来。也可以直接打字。</p>
+      <div class="rec-box">
+        <div id="recTime" class="rec-time">0s</div>
+        <div id="micStatus" class="rec-status">点击开始录音</div>
+        <button id="micBtn" class="mic-btn" onclick="toggleMic()">🎙</button>
       </div>
-      <button class="btn" style="width:100%" onclick="classifyAndShow('voice')">识别并分类</button>
+      <div class="or-line"><span>或手动输入中文</span></div>
+      <textarea id="capInputType" class="input" style="height:74px;width:100%" placeholder="直接打字也行，例如：我想点一杯冰美式。"></textarea>
+      <button class="btn" style="width:100%;margin-top:12px" onclick="capToStep2()">下一步</button>
     </div>
 
-    <div id="capType" style="display:none">
-      <textarea id="capInputType" class="input" style="height:80px;width:100%;margin-bottom:10px" placeholder="直接打一句中文，例如：周五晚上最适合窝在沙发上看电影。"></textarea>
-      <button class="btn" style="width:100%" onclick="classifyAndShow('type')">识别并分类</button>
+    <!-- 步骤2：转写 -->
+    <div class="cap-step" id="capStep2" style="display:none">
+      <p class="small" style="margin-bottom:10px">确认中文是否正确，可直接修改。</p>
+      <textarea id="capCnEdit" class="input" style="height:96px;width:100%"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn secondary" style="flex:1" onclick="setCapStep(1)">上一步</button>
+        <button class="btn" style="flex:1" onclick="capToStep3()">下一步</button>
+      </div>
     </div>
 
-    <div id="capResult" style="display:none;margin-top:14px">
-      <div class="form-group"><label>中文原句</label><input class="input" id="capCn"></div>
-      <div class="form-group"><label>自动分类</label><input class="input" id="capScene"></div>
-      <div class="form-group"><label>英文翻译（自己翻好后填这里，可留空）</label><input class="input" id="capEn" placeholder="留空也能存，之后补上"></div>
-      <div class="form-group"><label>标签（选填，如：追剧/周末）</label><input class="input" id="capTag" placeholder="选填"></div>
-      <button class="btn secondary" style="width:100%;margin-bottom:8px" onclick="copyForTranslate()">📋 复制中文去翻译</button>
-      <button class="btn" style="width:100%" onclick="saveCapture()">保存到句型库</button>
+    <!-- 步骤3：翻译 -->
+    <div class="cap-step" id="capStep3" style="display:none">
+      <p class="small" style="margin-bottom:10px">复制中文去你常用的翻译软件，翻好后把英文填回来（可留空，之后补）。</p>
+      <button class="btn secondary" style="width:100%;margin-bottom:10px" onclick="copyForTranslate()">📋 复制中文去翻译</button>
+      <textarea id="capEn" class="input" style="height:74px;width:100%" placeholder="英文翻译（自己翻好后填这里，可留空）"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn secondary" style="flex:1" onclick="setCapStep(2)">上一步</button>
+        <button class="btn" style="flex:1" onclick="capToStep4()">下一步</button>
+      </div>
+    </div>
+
+    <!-- 步骤4：归类 -->
+    <div class="cap-step" id="capStep4" style="display:none">
+      <p class="small" style="margin-bottom:8px">系统已自动归类，如不对可点其它场景改选。</p>
+      <div id="capSceneChips" class="chip-row"></div>
+      <div class="form-group" style="margin-top:12px"><label>标签（选填，如：追剧/周末）</label><input class="input" id="capTag" placeholder="选填"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn secondary" style="flex:1" onclick="setCapStep(3)">上一步</button>
+        <button class="btn" style="flex:1" onclick="saveCapture()">保存到句型库</button>
+      </div>
     </div>
   </div>
 </div>
@@ -477,14 +537,42 @@ function setMode(mode,el){
 }
 
 /* ===== 句型库 ===== */
+let sentenceScene='全部';
 function renderSentences(){
   const s=getState();
-  const tb=document.querySelector('#sentenceTable tbody');
-  const due=s.sentences.filter(x=>!x.reviewedToday);
-  tb.innerHTML = s.sentences.length ? s.sentences.map((x,i)=>{
+  const all=s.sentences;
+  const scenes=[...new Set(packs.map(p=>p.scene))];
+  const counts={}; scenes.forEach(sc=>counts[sc]=0); counts['全部']=all.length;
+  all.forEach(x=>{ if(counts[x.scene]!==undefined) counts[x.scene]++; else { counts[x.scene]=1; scenes.push(x.scene); } });
+  const scBox=document.getElementById('sceneCards');
+  if(scBox){
+    const list=['全部',...scenes];
+    scBox.innerHTML=list.map(sc=>'<div class="scene-card'+(sc===sentenceScene?' active':'')+'" onclick="setSentenceScene(\''+sc.replace(/'/g,"\\'")+'\',this)"><div class="nm">'+esc(sc)+'</div><div class="ct">'+counts[sc]+' 句</div></div>').join('');
+  }
+  const listBox=document.getElementById('sentenceList');
+  if(!listBox) return;
+  const view = sentenceScene==='全部' ? all : all.filter(x=>x.scene===sentenceScene);
+  listBox.innerHTML = view.length ? view.map((x)=>{
+    const realIdx = all.indexOf(x);
     const isDue=!x.reviewedToday;
-    return '<tr><td>'+(i+1)+'</td><td><span class="tag">'+esc(x.scene)+'</span></td><td>'+esc(x.en)+'</td><td>'+esc(x.cn)+'</td><td>'+esc(x.use||'')+'</td><td>'+(isDue?'<button class="btn sm" onclick="markReviewed('+i+')">复习</button>':(x.date?'<span class="small">✅'+x.date+'</span>':'<span class="small">✅</span>'))+'</td></tr>';
-  }).join('') : '<tr><td colspan="6"><p class="empty">还没有句型。下方添加，或聊天让我录入。</p></td></tr>';
+    const act = isDue
+      ? '<button class="btn sm" onclick="markReviewed('+realIdx+')">复习</button>'
+      : (x.date?'<span class="small">✅ '+esc(x.date)+'</span>':'<span class="small">✅</span>');
+    const en = x.en ? esc(x.en) : '<span style="color:var(--accent)">英文待补</span>';
+    const speakArg = (x.en||x.cn||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return '<div class="sentence-card">'
+      + '<div class="row1"><span class="tag">'+esc(x.scene)+'</span>'+(x.use?'<span class="small">'+esc(x.use)+'</span>':'')+'</div>'
+      + '<div class="cn">'+esc(x.cn||'')+'</div>'
+      + '<div class="en">'+en+'</div>'
+      + '<div class="actions"><button class="play-btn" onclick="speakText(\''+speakArg+'\')" title="听原声">▶</button>'+act+'</div>'
+      + '</div>';
+  }).join('') : '<p class="empty">这个场景还没有句型。换个场景，或用右下角「+」添加。</p>';
+}
+function setSentenceScene(sc,el){
+  sentenceScene=sc;
+  document.querySelectorAll('#sceneCards .scene-card').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderSentences();
 }
 function addSentence(){
   const scene=document.getElementById('s-scene').value.trim();
@@ -978,9 +1066,9 @@ function initSpeech(){
   recognition.lang = 'zh-CN';
   recognition.continuous = true;
   recognition.interimResults = true;
-  recognition.onstart = ()=>{ micOn=true; updateMicUI('正在听…请说中文'); };
-  recognition.onend = ()=>{ micOn=false; updateMicUI('点麦克风开始说中文'); };
-  recognition.onerror = (e)=>{ micOn=false; updateMicUI('识别失败，请打字或重试'); console.log(e.error); };
+  recognition.onstart = ()=>{ micOn=true; micStarted(); updateMicUI('正在听…请说中文'); };
+  recognition.onend = ()=>{ micOn=false; micStopped(); updateMicUI('点击开始录音'); };
+  recognition.onerror = (e)=>{ micOn=false; micStopped(); updateMicUI('识别失败，请打字或重试'); console.log(e.error); };
   recognition.onresult = (e)=>{
     let final='', interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
@@ -993,43 +1081,75 @@ function initSpeech(){
     document.getElementById('micStatus').textContent = interim ? '听到：'+interim : '点麦克风开始说中文';
   };
 }
-function updateMicUI(txt){ document.getElementById('micStatus').textContent=txt; }
-function openCapture(){ document.getElementById('captureModal').style.display='flex'; setCapTab('voice'); initSpeech(); }
-function closeCapture(){ stopMic(); document.getElementById('captureModal').style.display='none'; document.getElementById('capResult').style.display='none'; }
-function setCapTab(tab){
-  document.getElementById('capVoice').style.display=tab==='voice'?'block':'none';
-  document.getElementById('capType').style.display=tab==='type'?'block':'none';
-  document.getElementById('capTabVoice').className=tab==='voice'?'btn':'btn secondary';
-  document.getElementById('capTabType').className=tab==='type'?'btn':'btn secondary';
+function updateMicUI(txt){ const m=document.getElementById('micStatus'); if(m) m.textContent=txt; }
+/* 录音计时 + 按钮状态 */
+let recTimer=null, recSeconds=0;
+function micStarted(){ recSeconds=0; if(recTimer) clearInterval(recTimer); recTimer=setInterval(()=>{ recSeconds++; const t=document.getElementById('recTime'); if(t) t.textContent=recSeconds+'s'; },1000); const b=document.getElementById('micBtn'); if(b) b.classList.add('recording'); }
+function micStopped(){ if(recTimer){ clearInterval(recTimer); recTimer=null; } const t=document.getElementById('recTime'); if(t) t.textContent='0s'; const b=document.getElementById('micBtn'); if(b) b.classList.remove('recording'); }
+/* 新建句子 4 步向导状态 */
+let capSelectedScene='';
+function openCapture(){ document.getElementById('captureModal').style.display='flex'; resetCapture(); initSpeech(); }
+function resetCapture(){
+  capSelectedScene='';
+  const ids=['capInputType','capInputVoice','capCnEdit','capEn','capTag'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  micStopped();
+  setCapStep(1);
+}
+function closeCapture(){ stopMic(); document.getElementById('captureModal').style.display='none'; }
+function setCapStep(n){
+  [1,2,3,4].forEach(i=>{
+    const p=document.getElementById('capStep'+i); if(p) p.style.display = i===n?'block':'none';
+    const st=document.querySelector('.stepper .step[data-step="'+i+'"]');
+    if(st){ st.classList.remove('active','done'); if(i<n) st.classList.add('done'); else if(i===n) st.classList.add('active'); }
+  });
+}
+function capToStep2(){
+  const cn=(document.getElementById('capInputType').value||'').trim() || (document.getElementById('capInputVoice').value||'').trim();
+  if(!cn){ toast('请先说话或打字'); return; }
+  document.getElementById('capCnEdit').value=cn;
+  setCapStep(2);
+}
+function capToStep3(){
+  const cn=(document.getElementById('capCnEdit').value||'').trim();
+  if(!cn){ toast('中文不能为空'); return; }
+  setCapStep(3);
+}
+function capToStep4(){
+  const cn=(document.getElementById('capCnEdit').value||'').trim();
+  const rec=guessScene(cn);
+  capSelectedScene=rec;
+  renderCapSceneChips(rec);
+  setCapStep(4);
+}
+function renderCapSceneChips(sel){
+  const SCENES=[...new Set(packs.map(p=>p.scene))];
+  const box=document.getElementById('capSceneChips');
+  box.innerHTML=SCENES.map(sc=>'<div class="scene-chip'+(sc===sel?' active':'')+'" onclick="setCapScene(\''+sc.replace(/'/g,"\\'")+'\',this)">'+esc(sc)+'</div>').join('');
+}
+function setCapScene(sc,el){
+  capSelectedScene=sc;
+  document.querySelectorAll('#capSceneChips .scene-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
 }
 function toggleMic(){
   initSpeech(); if(!recognition) return;
-  if(micOn){ stopMic(); } else { recognition.start(); }
+  if(micOn){ stopMic(); } else { micStarted(); recognition.start(); }
 }
-function stopMic(){ if(recognition && micOn){ try{recognition.stop();}catch(e){} } micOn=false; updateMicUI('点麦克风开始说中文'); }
-function getCapInput(mode){ return document.getElementById(mode==='voice'?'capInputVoice':'capInputType').value; }
-function classifyAndShow(mode){
-  const cn = getCapInput(mode).trim();
-  if(!cn){ toast('请先说话或打字'); return; }
-  document.getElementById('capCn').value = cn;
-  document.getElementById('capScene').value = guessScene(cn);
-  document.getElementById('capEn').value = '';
-  document.getElementById('capTag').value = '';
-  document.getElementById('capResult').style.display='block';
-}
+function stopMic(){ if(recognition && micOn){ try{recognition.stop();}catch(e){} } micOn=false; micStopped(); updateMicUI('点击开始录音'); }
 /* 只复制中文原句，用户用自己习惯的翻译软件翻完再填回英文框 */
 function copyForTranslate(){
-  const cn=document.getElementById('capCn').value.trim();
+  const cn=(document.getElementById('capCnEdit').value||'').trim();
   if(!cn){ toast('没有可复制的中文'); return; }
-  if(navigator.clipboard){ navigator.clipboard.writeText(cn).then(()=>toast('中文已复制，去你的翻译软件粘贴即可')).catch(()=>toast('复制失败，请手动复制上方「中文原句」')); }
-  else { toast('请手动复制上方「中文原句」'); }
+  if(navigator.clipboard){ navigator.clipboard.writeText(cn).then(()=>toast('中文已复制，去你的翻译软件粘贴即可')).catch(()=>toast('复制失败，请手动复制上方中文')); }
+  else { toast('请手动复制上方中文'); }
 }
 function saveCapture(){
-  const scene=document.getElementById('capScene').value.trim()||'未分类';
-  const cn=document.getElementById('capCn').value.trim();
-  const en=document.getElementById('capEn').value.trim();
-  const tag=document.getElementById('capTag').value.trim();
-  if(!cn){ toast('中文原句不能为空'); return; }
+  const cn=(document.getElementById('capCnEdit').value||'').trim();
+  const scene=capSelectedScene||'未分类';
+  const en=(document.getElementById('capEn').value||'').trim();
+  const tag=(document.getElementById('capTag').value||'').trim();
+  if(!cn){ toast('中文不能为空'); return; }
   const s=getState();
   s.sentences.push({scene,en,cn,use:tag,date:'',reviewedToday:false});
   setState(s);
@@ -1054,6 +1174,10 @@ function resetData(){
   renderToday(); renderProfile(); renderTodayOne(); renderCreator(); renderPush(); loadForms();
   const m=lsGet('mode');
   if(m){ const arr=document.querySelectorAll('#today .mode'); arr.forEach(x=>x.classList.remove('active')); (m==='light'?arr[1]:arr[0]).classList.add('active'); }
+  /* 新建句子弹窗：Esc 关闭 + 点背景关闭 */
+  const cm=document.getElementById('captureModal');
+  if(cm){ cm.addEventListener('click',e=>{ if(e.target===e.currentTarget) closeCapture(); }); }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const mm=document.getElementById('captureModal'); if(mm && mm.style.display==='flex') closeCapture(); } });
 })();
 </script>
 
