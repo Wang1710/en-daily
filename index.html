@@ -757,13 +757,13 @@ function renderShadow(){
     '<div style="font-size:19px;font-weight:600;margin:10px 0;line-height:1.5">'+esc(x.en)+'</div>'+
     '<div class="small" style="margin-bottom:12px">'+esc(x.cn)+'</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-      '<button class="btn" onclick="shadowSpeak(0.95)">🔊 听原声</button>'+
-      '<button class="btn secondary" onclick="shadowSpeak(0.6)">🐢 慢速</button>'+
-      '<button class="btn secondary" onclick="shadowRecord()">🎤 自录对比</button>'+
+      '<button class="btn" onclick="shadowSpeak(0.95)">▶ 听原声</button>'+
+      '<button class="btn secondary" onclick="shadowSpeak(0.6)">◐ 慢速</button>'+
+      '<button class="btn secondary" onclick="shadowRecord()">🎙 自录对比</button>'+
     '</div>'+
     '<div style="display:flex;gap:8px;margin-top:10px">'+
-      '<button class="btn" style="flex:1" onclick="shadowDone()">✅ 会了</button>'+
-      '<button class="btn secondary" style="flex:1" onclick="shadowSkip()">⏭ 跳过</button>'+
+      '<button class="btn" style="flex:1" onclick="shadowDone()">✓ 会了</button>'+
+      '<button class="btn secondary" style="flex:1" onclick="shadowSkip()">» 跳过</button>'+
     '</div>'+
     '<div id="recBox" style="margin-top:10px"></div>';
   document.getElementById('shadowProg').textContent='进度 '+(shadowIdx+1)+' / '+shadowQueue.length;
